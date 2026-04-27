@@ -13,7 +13,7 @@ Aplicación web para el seguimiento de mantenimientos preventivos de flotas de t
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/5Picos/Lusicic_mock.git
 cd flota-mantenimiento
 ```
 
