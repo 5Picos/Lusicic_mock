@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FlotaTrack — Sistema de mantenimiento de flota
 
-## Getting Started
+Aplicación web para el seguimiento de mantenimientos preventivos de flotas de transporte. Permite visualizar el estado de cada vehículo, registrar servicios realizados y anticipar vencimientos por kilómetros o por tiempo.
 
-First, run the development server:
+## Requisitos previos
+
+- [Node.js](https://nodejs.org/) v18 o superior
+- [Git](https://git-scm.com/)
+- npm (incluido con Node.js)
+
+## Instalación y ejecución local
+
+### 1. Clonar el repositorio
+
+```bash
+git clone <URL_DEL_REPOSITORIO>
+cd flota-mantenimiento
+```
+
+### 2. Instalar dependencias
+
+```bash
+npm install
+```
+
+### 3. Ejecutar en modo desarrollo
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La aplicación quedará disponible en [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts disponibles
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Comando | Descripción |
+|---|---|
+| `npm run dev` | Servidor de desarrollo con hot reload |
+| `npm run build` | Compilación para producción |
+| `npm start` | Ejecuta la build de producción |
+| `npm run lint` | Análisis estático del código |
 
-## Learn More
+## Stack tecnológico
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Next.js 16** con App Router
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS v4**
+- **shadcn/ui** — componentes de interfaz
+- **Lucide React** — íconos
