@@ -89,5 +89,5 @@
   Total: 13 pantallas de carga + 5 informes propios + 6 vistas de proceso
   Tiempo: 168 + 5 presupuesto
   $: 20k?
-  Total: 3.460.000 
+  Total: 3.460.000 = 4 palos
   quiiii?? un monton me parece

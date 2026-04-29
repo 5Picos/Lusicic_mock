@@ -5,16 +5,17 @@ import { gastos, proveedores, camiones, TipoProveedor } from "@/lib/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { TrendingDown, Fuel, Building, Wrench, Package } from "lucide-react";
+import { TrendingDown, Fuel, Building, Wrench, Package, Users } from "lucide-react";
 
 const TIPO_CFG: Record<TipoProveedor, { label: string; icon: React.ElementType; cls: string; bar: string }> = {
   combustible: { label: "Combustible", icon: Fuel,     cls: "bg-orange-50 text-orange-700 border-orange-200", bar: "bg-orange-400" },
   estatal:     { label: "Estatal",     icon: Building, cls: "bg-blue-50 text-blue-700 border-blue-200",       bar: "bg-blue-400" },
   repuestos:   { label: "Repuestos",   icon: Wrench,   cls: "bg-slate-100 text-slate-700 border-slate-200",   bar: "bg-slate-400" },
+  sueldos:     { label: "Sueldos",     icon: Users,    cls: "bg-green-50 text-green-700 border-green-200",    bar: "bg-green-400" },
   varios:      { label: "Varios",      icon: Package,  cls: "bg-purple-50 text-purple-700 border-purple-200", bar: "bg-purple-400" },
 };
 
-const TIPOS: TipoProveedor[] = ["combustible", "estatal", "repuestos", "varios"];
+const TIPOS: TipoProveedor[] = ["combustible", "estatal", "repuestos", "sueldos", "varios"];
 
 const MES_ACTUAL_DESDE = new Date().toISOString().slice(0, 7) + "-01";
 const HOY = new Date().toISOString().split("T")[0];

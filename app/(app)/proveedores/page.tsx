@@ -9,16 +9,17 @@ import { Label } from "@/components/ui/label";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
-import { Store, Plus, Fuel, Building, Wrench, Package } from "lucide-react";
+import { Store, Plus, Fuel, Building, Wrench, Package, Users } from "lucide-react";
 
 const TIPO_CFG: Record<TipoProveedor, { label: string; icon: React.ElementType; cls: string }> = {
   combustible: { label: "Combustible", icon: Fuel,     cls: "bg-orange-50 text-orange-700 border-orange-200" },
   estatal:     { label: "Estatal",     icon: Building, cls: "bg-blue-50 text-blue-700 border-blue-200" },
   repuestos:   { label: "Repuestos",   icon: Wrench,   cls: "bg-slate-100 text-slate-700 border-slate-200" },
+  sueldos:     { label: "Sueldos",     icon: Users,    cls: "bg-green-50 text-green-700 border-green-200" },
   varios:      { label: "Varios",      icon: Package,  cls: "bg-purple-50 text-purple-700 border-purple-200" },
 };
 
-const TIPOS: TipoProveedor[] = ["combustible", "estatal", "repuestos", "varios"];
+const TIPOS: TipoProveedor[] = ["combustible", "estatal", "repuestos", "sueldos", "varios"];
 
 const FORM_VACIO = { nombre: "", tipo: "varios" as TipoProveedor, cuit: "", telefono: "" };
 

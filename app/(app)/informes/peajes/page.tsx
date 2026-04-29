@@ -1,6 +1,14 @@
-import { gastos, pedidos, proveedores, localidades, camiones } from "@/lib/mock-data";
+"use client";
+
+import { useState, useMemo } from "react";
+import { gastos, pedidos, proveedores, localidades, camiones, choferes } from "@/lib/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Landmark } from "lucide-react";
+
+const MES_ACTUAL_DESDE = new Date().toISOString().slice(0, 7) + "-01";
+const HOY = new Date().toISOString().split("T")[0];
 
 function fmt(n: number) { return `$${n.toLocaleString("es-AR")}`; }
 function fmtFecha(s: string) {
@@ -9,27 +17,54 @@ function fmtFecha(s: string) {
   });
 }
 
-// Solo gastos vinculados a un pedido (peajes de remito)
-const gastosPeaje = gastos.filter((g) => g.pedidoId !== null);
+// Only toll expenses (linked to an order via orderId)
+const gastosPeajeBase = gastos.filter((g) => g.pedidoId !== null);
 
 export default function InformePeajesPage() {
-  const total = gastosPeaje.reduce((a, g) => a + g.monto, 0);
+  const [desde, setDesde]             = useState(MES_ACTUAL_DESDE);
+  const [hasta, setHasta]             = useState(HOY);
+  const [filtroChofer, setFiltroChofer] = useState("all");
+  const [filtroLocalidad, setFiltroLocalidad] = useState("all");
 
-  // Por localidad
+  const gastosFiltrados = useMemo(() =>
+    gastosPeajeBase
+      .filter((g) => g.fecha >= desde && g.fecha <= hasta)
+      .filter((g) => {
+        if (filtroChofer === "all") return true;
+        const pedido = pedidos.find((p) => p.id === g.pedidoId);
+        return pedido?.choferId === filtroChofer;
+      })
+      .filter((g) => {
+        if (filtroLocalidad === "all") return true;
+        const pedido = pedidos.find((p) => p.id === g.pedidoId);
+        return pedido?.localidadId === filtroLocalidad;
+      })
+      .sort((a, b) => b.fecha.localeCompare(a.fecha)),
+    [desde, hasta, filtroChofer, filtroLocalidad]
+  );
+
+  const total = gastosFiltrados.reduce((a, g) => a + g.monto, 0);
+
   const porLocalidad = localidades.map((loc) => {
-    const items = gastosPeaje.filter((g) => {
+    const items = gastosFiltrados.filter((g) => {
       const pedido = pedidos.find((p) => p.id === g.pedidoId);
       return pedido?.localidadId === loc.id;
     });
     return { localidad: loc, items, total: items.reduce((a, g) => a + g.monto, 0) };
   }).filter((x) => x.items.length > 0).sort((a, b) => b.total - a.total);
 
-  // Por proveedor
   const porProveedor = proveedores.map((pv) => ({
     proveedor: pv,
-    total: gastosPeaje.filter((g) => g.proveedorId === pv.id).reduce((a, g) => a + g.monto, 0),
-    count: gastosPeaje.filter((g) => g.proveedorId === pv.id).length,
+    total: gastosFiltrados.filter((g) => g.proveedorId === pv.id).reduce((a, g) => a + g.monto, 0),
+    count: gastosFiltrados.filter((g) => g.proveedorId === pv.id).length,
   })).filter((x) => x.total > 0).sort((a, b) => b.total - a.total);
+
+  const localidadesConPeaje = localidades.filter((loc) =>
+    gastosPeajeBase.some((g) => {
+      const pedido = pedidos.find((p) => p.id === g.pedidoId);
+      return pedido?.localidadId === loc.id;
+    })
+  );
 
   return (
     <div className="p-8 space-y-8">
@@ -37,6 +72,44 @@ export default function InformePeajesPage() {
         <h1 className="text-2xl font-bold text-slate-900">Peajes pagados</h1>
         <p className="text-slate-500 text-sm mt-1">Gastos de peaje generados desde remitos</p>
       </div>
+
+      {/* Filtros */}
+      <Card>
+        <CardContent className="pt-4 pb-4">
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs text-slate-500 uppercase tracking-wide">Desde</Label>
+              <Input type="date" value={desde} max={hasta} onChange={(e) => setDesde(e.target.value)} className="w-36" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-slate-500 uppercase tracking-wide">Hasta</Label>
+              <Input type="date" value={hasta} min={desde} max={HOY} onChange={(e) => setHasta(e.target.value)} className="w-36" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-slate-500 uppercase tracking-wide">Chofer</Label>
+              <select
+                value={filtroChofer}
+                onChange={(e) => setFiltroChofer(e.target.value)}
+                className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-400"
+              >
+                <option value="all">Todos</option>
+                {choferes.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-slate-500 uppercase tracking-wide">Destino</Label>
+              <select
+                value={filtroLocalidad}
+                onChange={(e) => setFiltroLocalidad(e.target.value)}
+                className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-400"
+              >
+                <option value="all">Todos</option>
+                {localidadesConPeaje.map((l) => <option key={l.id} value={l.id}>{l.nombre}</option>)}
+              </select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Resumen */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -55,7 +128,7 @@ export default function InformePeajesPage() {
         </Card>
         <Card className="border-slate-200 bg-slate-50">
           <CardContent className="pt-5 pb-4">
-            <p className="text-2xl font-bold text-slate-800">{gastosPeaje.length}</p>
+            <p className="text-2xl font-bold text-slate-800">{gastosFiltrados.length}</p>
             <p className="text-xs text-slate-500 font-medium">Registros de peaje</p>
           </CardContent>
         </Card>
@@ -74,6 +147,7 @@ export default function InformePeajesPage() {
             <CardTitle className="text-sm font-semibold text-slate-700">Por destino</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
+            {porLocalidad.length === 0 && <p className="text-slate-400 text-sm">Sin registros en el período</p>}
             {porLocalidad.map(({ localidad, items, total: subtotal }) => {
               const pct = total > 0 ? Math.round((subtotal / total) * 100) : 0;
               return (
@@ -101,6 +175,7 @@ export default function InformePeajesPage() {
             <CardTitle className="text-sm font-semibold text-slate-700">Por proveedor</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
+            {porProveedor.length === 0 && <p className="text-slate-400 text-sm">Sin registros en el período</p>}
             {porProveedor.map(({ proveedor, total: subtotal, count }) => {
               const pct = total > 0 ? Math.round((subtotal / total) * 100) : 0;
               return (
@@ -134,36 +209,42 @@ export default function InformePeajesPage() {
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Fecha</th>
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Concepto</th>
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Pedido</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Chofer</th>
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Camión</th>
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Proveedor</th>
                 <th className="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Monto</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {gastosPeaje
-                .sort((a, b) => b.fecha.localeCompare(a.fecha))
-                .map((g) => {
-                  const pedido   = pedidos.find((p) => p.id === g.pedidoId)!;
-                  const camion   = g.camionId ? camiones.find((c) => c.id === g.camionId) : null;
-                  const proveedor = proveedores.find((p) => p.id === g.proveedorId)!;
-                  return (
-                    <tr key={g.id} className="hover:bg-slate-50">
-                      <td className="px-6 py-3 text-slate-600 whitespace-nowrap">{fmtFecha(g.fecha)}</td>
-                      <td className="px-6 py-3 text-slate-700">{g.concepto}</td>
-                      <td className="px-6 py-3 font-mono text-xs text-slate-500">#{pedido.numeroPedido}</td>
-                      <td className="px-6 py-3 font-mono text-xs text-slate-500">{camion?.patente ?? "—"}</td>
-                      <td className="px-6 py-3 text-slate-600">{proveedor.nombre}</td>
-                      <td className="px-6 py-3 text-right font-semibold text-slate-800">{fmt(g.monto)}</td>
-                    </tr>
-                  );
-                })}
+              {gastosFiltrados.length === 0 && (
+                <tr><td colSpan={7} className="px-6 py-8 text-center text-slate-400">Sin registros para los filtros seleccionados</td></tr>
+              )}
+              {gastosFiltrados.map((g) => {
+                const pedido    = pedidos.find((p) => p.id === g.pedidoId);
+                const camion    = camiones.find((c) => c.id === g.camionId);
+                const chofer    = choferes.find((c) => c.id === pedido?.choferId);
+                const proveedor = proveedores.find((p) => p.id === g.proveedorId);
+                return (
+                  <tr key={g.id} className="hover:bg-slate-50">
+                    <td className="px-6 py-3 text-slate-600 whitespace-nowrap">{fmtFecha(g.fecha)}</td>
+                    <td className="px-6 py-3 text-slate-700">{g.concepto}</td>
+                    <td className="px-6 py-3 font-mono text-xs text-slate-500">#{pedido?.numeroPedido ?? "—"}</td>
+                    <td className="px-6 py-3 text-slate-600">{chofer?.nombre ?? "—"}</td>
+                    <td className="px-6 py-3 text-slate-500 font-mono text-xs">{camion?.patente ?? "—"}</td>
+                    <td className="px-6 py-3 text-slate-600">{proveedor?.nombre ?? "—"}</td>
+                    <td className="px-6 py-3 text-right font-semibold text-slate-800">{fmt(g.monto)}</td>
+                  </tr>
+                );
+              })}
             </tbody>
-            <tfoot>
-              <tr className="border-t bg-slate-50">
-                <td colSpan={5} className="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Total</td>
-                <td className="px-6 py-3 text-right font-bold text-slate-900">{fmt(total)}</td>
-              </tr>
-            </tfoot>
+            {gastosFiltrados.length > 0 && (
+              <tfoot>
+                <tr className="border-t bg-slate-50">
+                  <td colSpan={6} className="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Total</td>
+                  <td className="px-6 py-3 text-right font-bold text-slate-900">{fmt(total)}</td>
+                </tr>
+              </tfoot>
+            )}
           </table>
         </CardContent>
       </Card>

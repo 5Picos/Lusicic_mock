@@ -28,6 +28,7 @@ import {
   ClipboardX,
   FileWarning,
   Route,
+  Scale,
 } from "lucide-react";
 
 type NavItem  = { href: string; label: string; icon: React.ElementType };
@@ -73,15 +74,16 @@ const GROUPS: NavGroup[] = [
     label: "Informes",
     icon: BarChart3,
     items: [
+      { href: "/informes/comparativo",     label: "Comparativo",              icon: Scale },
       { href: "/informes/gastos",          label: "Gastos por período",       icon: TrendingDown },
       { href: "/informes/ingresos",        label: "Ingresos por período",     icon: TrendingUp },
+      { href: "/informes/viajes",          label: "Viajes / km por chofer",   icon: Route },
+      { href: "/informes/peajes",          label: "Peajes pagados",           icon: Landmark },
+      { href: "/informes/facturas-destino",label: "Facturas destino",         icon: Building2 },
       { href: "/remitos",                  label: "Pedidos sin remito",       icon: ClipboardX },
       { href: "/pedidos",                  label: "Pedidos sin asignar",      icon: Package },
       { href: "/cuenta-corriente",         label: "Remitos sin facturar",     icon: FileWarning },
-      { href: "/informes/facturas-destino",label: "Facturas destino",         icon: Building2 },
       { href: "/cheques",                  label: "Cheques a depositar",      icon: Landmark },
-      { href: "/informes/viajes",          label: "Viajes",                   icon: Route },
-      { href: "/informes/peajes",          label: "Peajes pagados",           icon: Landmark },
     ],
   },
 ];

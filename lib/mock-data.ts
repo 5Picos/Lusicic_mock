@@ -49,15 +49,6 @@ export interface RegistroMantenimiento {
   notas: string;
 }
 
-export interface Viaje {
-  id: string;
-  camionId: string;
-  choferId: string;
-  fecha: string;
-  kmViaje: number;
-  origen: string;
-  destino: string;
-}
 
 export const choferes: Chofer[] = [
   { id: "c1", nombre: "Carlos Rodríguez", telefono: "011-4523-1234", email: "carlos@flota.com" },
@@ -207,8 +198,43 @@ export const registrosMantenimiento: RegistroMantenimiento[] = [
   { id: "rm12", camionId: "cam4", tipoMantenimientoId: "tm4", choferId: "c1", fecha: "2025-06-01", kmAlMomento: 172000, notas: "" },
 ];
 
+export interface Articulo {
+  id: string;
+  codigo: string;
+  nombre: string;
+}
+
+export interface ItemPedido {
+  id: string;
+  pedidoId: string;
+  articuloId: string;
+  cantidad: number;
+}
+
+export const articulos: Articulo[] = [
+  { id: "art1", codigo: "HRT-001", nombre: "Harina de trigo 25kg" },
+  { id: "art2", codigo: "ACG-002", nombre: "Aceite de girasol 1L" },
+  { id: "art3", codigo: "PSS-003", nombre: "Pastas secas surtidas" },
+  { id: "art4", codigo: "GLL-004", nombre: "Galletitas surtidas" },
+  { id: "art5", codigo: "SNK-005", nombre: "Snacks y golosinas" },
+  { id: "art6", codigo: "MZC-006", nombre: "Mezcla lista para torta" },
+  { id: "art7", codigo: "FRG-007", nombre: "Productos refrigerados" },
+  { id: "art8", codigo: "FDS-008", nombre: "Fideos secos" },
+];
+
+export const itemsPedido: ItemPedido[] = [
+  { id: "ip1", pedidoId: "p1", articuloId: "art1", cantidad: 32 },
+  { id: "ip2", pedidoId: "p2", articuloId: "art7", cantidad: 10 },
+  { id: "ip3", pedidoId: "p3", articuloId: "art2", cantidad: 38 },
+  { id: "ip4", pedidoId: "p4", articuloId: "art5", cantidad: 20 },
+  { id: "ip5", pedidoId: "p5", articuloId: "art6", cantidad: 38 },
+  { id: "ip6", pedidoId: "p6", articuloId: "art3", cantidad: 32 },
+  { id: "ip7", pedidoId: "p7", articuloId: "art8", cantidad: 32 },
+  { id: "ip8", pedidoId: "p8", articuloId: "art4", cantidad: 40 },
+];
+
 export type EstadoPedido = "pending" | "assigned" | "delivered" | "invoiced";
-export type Modalidad = "SIP" | "FCA";
+export type Modalidad = "CIP" | "FCA";
 
 export interface Cliente {
   id: string;
@@ -276,19 +302,19 @@ export const localidades: Localidad[] = [
 ];
 
 export const listasPrecio: ListaPrecio[] = [
-  { id: "lp1", nombre: "SIP - 32 toneladas" },
-  { id: "lp2", nombre: "SIP - 38 toneladas" },
+  { id: "lp1", nombre: "CIP- 32 toneladas" },
+  { id: "lp2", nombre: "CIP- 38 toneladas" },
   { id: "lp3", nombre: "FCA" },
 ];
 
 export const preciosLocalidad: PrecioLocalidad[] = [
-  // SIP - 32 toneladas
+  // CIP- 32 toneladas
   { id: "pl01", listaPrecioId: "lp1", localidadId: "loc1", precio: 85000 },
   { id: "pl02", listaPrecioId: "lp1", localidadId: "loc2", precio: 145000 },
   { id: "pl03", listaPrecioId: "lp1", localidadId: "loc3", precio: 220000 },
   { id: "pl04", listaPrecioId: "lp1", localidadId: "loc4", precio: 28000 },
   { id: "pl05", listaPrecioId: "lp1", localidadId: "loc5", precio: 88000 },
-  // SIP - 38 toneladas
+  // CIP- 38 toneladas
   { id: "pl06", listaPrecioId: "lp2", localidadId: "loc1", precio: 95000 },
   { id: "pl07", listaPrecioId: "lp2", localidadId: "loc2", precio: 165000 },
   { id: "pl08", listaPrecioId: "lp2", localidadId: "loc3", precio: 250000 },
@@ -303,13 +329,13 @@ export const preciosLocalidad: PrecioLocalidad[] = [
 ];
 
 export const pedidos: Pedido[] = [
-  { id: "p1", numeroPedido: "0045", fecha: "2026-04-27", clienteSolicitanteId: "cl1", clienteDestinoId: "cl1", localidadId: "loc2", modalidad: "SIP", tonelaje: 32, detalleCarga: "Harina de trigo", camionId: null, choferId: null, precioAplicado: 145000, estado: "pending" },
+  { id: "p1", numeroPedido: "0045", fecha: "2026-04-27", clienteSolicitanteId: "cl1", clienteDestinoId: "cl1", localidadId: "loc2", modalidad: "CIP", tonelaje: 32, detalleCarga: "Harina de trigo", camionId: null, choferId: null, precioAplicado: 145000, estado: "pending" },
   { id: "p2", numeroPedido: "0046", fecha: "2026-04-27", clienteSolicitanteId: "cl1", clienteDestinoId: "cl3", localidadId: "loc4", modalidad: "FCA", tonelaje: null, detalleCarga: "Productos refrigerados", camionId: null, choferId: null, precioAplicado: 30000, estado: "pending" },
-  { id: "p3", numeroPedido: "0044", fecha: "2026-04-25", clienteSolicitanteId: "cl1", clienteDestinoId: "cl2", localidadId: "loc1", modalidad: "SIP", tonelaje: 38, detalleCarga: "Aceite de girasol", camionId: "cam2", choferId: "c2", precioAplicado: 95000, estado: "assigned" },
+  { id: "p3", numeroPedido: "0044", fecha: "2026-04-25", clienteSolicitanteId: "cl1", clienteDestinoId: "cl2", localidadId: "loc1", modalidad: "CIP", tonelaje: 38, detalleCarga: "Aceite de girasol", camionId: "cam2", choferId: "c2", precioAplicado: 95000, estado: "assigned" },
   { id: "p4", numeroPedido: "0041", fecha: "2026-04-17", clienteSolicitanteId: "cl1", clienteDestinoId: "cl4", localidadId: "loc1", modalidad: "FCA", tonelaje: null, detalleCarga: "Snacks y golosinas", camionId: "cam3", choferId: "c3", precioAplicado: 90000, estado: "assigned" },
-  { id: "p5", numeroPedido: "0043", fecha: "2026-04-22", clienteSolicitanteId: "cl1", clienteDestinoId: "cl1", localidadId: "loc3", modalidad: "SIP", tonelaje: 38, detalleCarga: "Mezcla lista para torta", camionId: "cam4", choferId: "c4", precioAplicado: 250000, estado: "delivered" },
-  { id: "p6", numeroPedido: "0040", fecha: "2026-04-15", clienteSolicitanteId: "cl1", clienteDestinoId: "cl2", localidadId: "loc5", modalidad: "SIP", tonelaje: 32, detalleCarga: "Pastas secas", camionId: "cam1", choferId: "c1", precioAplicado: 88000, estado: "delivered" },
-  { id: "p7", numeroPedido: "0042", fecha: "2026-04-18", clienteSolicitanteId: "cl1", clienteDestinoId: "cl1", localidadId: "loc5", modalidad: "SIP", tonelaje: 32, detalleCarga: "Fideos secos", camionId: "cam1", choferId: "c1", precioAplicado: 88000, estado: "invoiced" },
+  { id: "p5", numeroPedido: "0043", fecha: "2026-04-22", clienteSolicitanteId: "cl1", clienteDestinoId: "cl1", localidadId: "loc3", modalidad: "CIP", tonelaje: 38, detalleCarga: "Mezcla lista para torta", camionId: "cam4", choferId: "c4", precioAplicado: 250000, estado: "delivered" },
+  { id: "p6", numeroPedido: "0040", fecha: "2026-04-15", clienteSolicitanteId: "cl1", clienteDestinoId: "cl2", localidadId: "loc5", modalidad: "CIP", tonelaje: 32, detalleCarga: "Pastas secas", camionId: "cam1", choferId: "c1", precioAplicado: 88000, estado: "delivered" },
+  { id: "p7", numeroPedido: "0042", fecha: "2026-04-18", clienteSolicitanteId: "cl1", clienteDestinoId: "cl1", localidadId: "loc5", modalidad: "CIP", tonelaje: 32, detalleCarga: "Fideos secos", camionId: "cam1", choferId: "c1", precioAplicado: 88000, estado: "invoiced" },
   { id: "p8", numeroPedido: "0039", fecha: "2026-04-10", clienteSolicitanteId: "cl1", clienteDestinoId: "cl4", localidadId: "loc2", modalidad: "FCA", tonelaje: null, detalleCarga: "Galletitas", camionId: "cam3", choferId: "c3", precioAplicado: 155000, estado: "invoiced" },
 ];
 
@@ -320,7 +346,7 @@ export const remitos: Remito[] = [
   { id: "rem4", pedidoId: "p8", numeroRemito: "R-00882", fecha: "2026-04-12", notas: "Firma: María López" },
 ];
 
-export type TipoProveedor = "combustible" | "estatal" | "repuestos" | "varios";
+export type TipoProveedor = "combustible" | "estatal" | "repuestos" | "sueldos" | "varios";
 
 export interface Proveedor {
   id: string;
@@ -354,6 +380,7 @@ export const proveedores: Proveedor[] = [
   { id: "pv6", nombre: "Repuestos Del Sur S.R.L.", tipo: "repuestos",   cuit: "30-71234567-8", telefono: "011-4555-7890" },
   { id: "pv7", nombre: "Neumáticos Rodavía",       tipo: "repuestos",   cuit: "30-65432198-7", telefono: "011-4312-4567" },
   { id: "pv8", nombre: "Lubricantes Omega",        tipo: "varios",      cuit: "20-28765432-1", telefono: "011-4789-0123" },
+  { id: "pv9", nombre: "Personal / Choferes",      tipo: "sueldos",     cuit: "20-00000000-0", telefono: "" },
 ];
 
 export type FormaPagoCobro = "efectivo" | "transferencia" | "cheque";
@@ -390,18 +417,11 @@ export const gastos: Gasto[] = [
   { id: "g10", proveedorId: "pv4", fecha: "2026-04-17", concepto: "Peaje R-00889 — Santa Fe",  camionId: "cam1", pedidoId: "p6", monto: 9200,  formaPago: "efectivo", referencia: "", notas: "" },
   { id: "g11", proveedorId: "pv4", fecha: "2026-04-20", concepto: "Peaje R-00887 — Santa Fe",  camionId: "cam1", pedidoId: "p7", monto: 9200,  formaPago: "efectivo", referencia: "", notas: "" },
   { id: "g12", proveedorId: "pv4", fecha: "2026-04-12", concepto: "Peaje R-00882 — Córdoba",   camionId: "cam3", pedidoId: "p8", monto: 12000, formaPago: "efectivo", referencia: "", notas: "" },
+  // Sueldos
+  { id: "g13", proveedorId: "pv9", fecha: "2026-04-30", concepto: "Sueldos abril — choferes",  camionId: null, pedidoId: null, monto: 380000, formaPago: "transferencia", referencia: "SUELDOS-ABR-26", notas: "" },
+  { id: "g14", proveedorId: "pv9", fecha: "2026-03-31", concepto: "Sueldos marzo — choferes",  camionId: null, pedidoId: null, monto: 360000, formaPago: "transferencia", referencia: "SUELDOS-MAR-26", notas: "" },
 ];
 
-export const viajes: Viaje[] = [
-  { id: "v1", camionId: "cam1", choferId: "c1", fecha: "2026-04-20", kmViaje: 180, origen: "Buenos Aires", destino: "Rosario" },
-  { id: "v2", camionId: "cam1", choferId: "c1", fecha: "2026-04-22", kmViaje: 120, origen: "Rosario", destino: "Santa Fe" },
-  { id: "v3", camionId: "cam2", choferId: "c2", fecha: "2026-04-21", kmViaje: 95, origen: "Buenos Aires", destino: "La Plata" },
-  { id: "v4", camionId: "cam3", choferId: "c3", fecha: "2026-04-19", kmViaje: 310, origen: "Buenos Aires", destino: "Córdoba" },
-  { id: "v5", camionId: "cam4", choferId: "c4", fecha: "2026-04-20", kmViaje: 620, origen: "Buenos Aires", destino: "Mendoza" },
-  { id: "v6", camionId: "cam4", choferId: "c4", fecha: "2026-04-23", kmViaje: 580, origen: "Mendoza", destino: "Buenos Aires" },
-  { id: "v7", camionId: "cam2", choferId: "c3", fecha: "2026-04-24", kmViaje: 85, origen: "Buenos Aires", destino: "Campana" },
-  { id: "v8", camionId: "cam1", choferId: "c2", fecha: "2026-04-25", kmViaje: 150, origen: "Santa Fe", destino: "Paraná" },
-];
 
 // ── Vencimientos de choferes ──────────────────────────────────────────────────
 

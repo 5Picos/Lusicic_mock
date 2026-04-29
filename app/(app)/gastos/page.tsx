@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import {
   CreditCard, Plus, Fuel, Building, Wrench, Package,
-  Banknote, ArrowRightLeft, Landmark, TrendingDown,
+  Banknote, ArrowRightLeft, Landmark, TrendingDown, Users,
 } from "lucide-react";
 
 // ── Config ────────────────────────────────────────────────────────────────────
@@ -23,6 +23,7 @@ const TIPO_CFG: Record<TipoProveedor, { label: string; icon: React.ElementType; 
   combustible: { label: "Combustible", icon: Fuel,     cls: "bg-orange-50 text-orange-700 border-orange-200" },
   estatal:     { label: "Estatal",     icon: Building, cls: "bg-blue-50 text-blue-700 border-blue-200" },
   repuestos:   { label: "Repuestos",   icon: Wrench,   cls: "bg-slate-100 text-slate-700 border-slate-200" },
+  sueldos:     { label: "Sueldos",     icon: Users,    cls: "bg-green-50 text-green-700 border-green-200" },
   varios:      { label: "Varios",      icon: Package,  cls: "bg-purple-50 text-purple-700 border-purple-200" },
 };
 
@@ -75,7 +76,7 @@ export default function GastosPage() {
 
   const totalGeneral = gastos.reduce((a, g) => a + g.monto, 0);
 
-  const totalPorTipo = (["combustible", "estatal", "repuestos", "varios"] as TipoProveedor[]).map((t) => ({
+  const totalPorTipo = (["combustible", "estatal", "repuestos", "sueldos", "varios"] as TipoProveedor[]).map((t) => ({
     tipo: t,
     total: gastos.filter((g) => proveedores.find((p) => p.id === g.proveedorId)?.tipo === t)
                  .reduce((a, g) => a + g.monto, 0),
@@ -97,6 +98,7 @@ export default function GastosPage() {
       fecha: form.fecha,
       concepto: form.concepto.trim(),
       camionId: form.camionId || null,
+      pedidoId: null,
       monto: Number(form.monto),
       formaPago: form.formaPago,
       referencia: form.referencia.trim(),
@@ -123,7 +125,7 @@ export default function GastosPage() {
       </div>
 
       {/* Resumen por tipo */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {totalPorTipo.map(({ tipo, total }) => {
           const cfg = TIPO_CFG[tipo];
           const Icon = cfg.icon;
@@ -257,7 +259,7 @@ export default function GastosPage() {
                 className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-400"
               >
                 <option value="">Seleccioná un proveedor...</option>
-                {(["combustible", "estatal", "repuestos", "varios"] as TipoProveedor[]).map((tipo) => {
+                {(["combustible", "estatal", "repuestos", "sueldos", "varios"] as TipoProveedor[]).map((tipo) => {
                   const pvs = proveedores.filter((p) => p.tipo === tipo);
                   if (pvs.length === 0) return null;
                   return (

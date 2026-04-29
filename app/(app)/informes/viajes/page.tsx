@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { viajes, choferes, camiones } from "@/lib/mock-data";
+import { pedidos, remitos, choferes, camiones, localidades } from "@/lib/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Route } from "lucide-react";
 
 const MES_ACTUAL_DESDE = new Date().toISOString().slice(0, 7) + "-01";
 const HOY = new Date().toISOString().split("T")[0];
@@ -16,6 +15,26 @@ function fmtFecha(s: string) {
   });
 }
 
+// Trips derived from Orders that have a Receipt (delivered/invoiced).
+// Date = Receipt.date; km = Locality.roundTripKm; destination = Locality.name.
+const viajesDerivados = remitos
+  .map((remito) => {
+    const pedido   = pedidos.find((p) => p.id === remito.pedidoId);
+    if (!pedido) return null;
+    const localidad = localidades.find((l) => l.id === pedido.localidadId);
+    if (!localidad) return null;
+    return {
+      id:         remito.id,
+      fecha:      remito.fecha,
+      camionId:   pedido.camionId,
+      choferId:   pedido.choferId,
+      destino:    localidad.nombre,
+      km:         localidad.kmIdaVuelta,
+      numeroPedido: pedido.numeroPedido,
+    };
+  })
+  .filter((v): v is NonNullable<typeof v> => v !== null);
+
 export default function InformeViajesPage() {
   const [desde, setDesde]           = useState(MES_ACTUAL_DESDE);
   const [hasta, setHasta]           = useState(HOY);
@@ -23,7 +42,7 @@ export default function InformeViajesPage() {
   const [filtroCamion, setFiltroCamion] = useState("all");
 
   const viajesFiltrados = useMemo(() =>
-    viajes
+    viajesDerivados
       .filter((v) => v.fecha >= desde && v.fecha <= hasta)
       .filter((v) => filtroChofer === "all" || v.choferId === filtroChofer)
       .filter((v) => filtroCamion === "all" || v.camionId === filtroCamion)
@@ -31,20 +50,18 @@ export default function InformeViajesPage() {
     [desde, hasta, filtroChofer, filtroCamion]
   );
 
-  const totalKm     = viajesFiltrados.reduce((a, v) => a + v.kmViaje, 0);
+  const totalKm     = viajesFiltrados.reduce((a, v) => a + v.km, 0);
   const totalViajes = viajesFiltrados.length;
 
-  // Km por camión
   const kmPorCamion = camiones.map((c) => ({
     camion: c,
-    km: viajesFiltrados.filter((v) => v.camionId === c.id).reduce((a, v) => a + v.kmViaje, 0),
+    km:    viajesFiltrados.filter((v) => v.camionId === c.id).reduce((a, v) => a + v.km, 0),
     count: viajesFiltrados.filter((v) => v.camionId === c.id).length,
   })).filter((x) => x.km > 0).sort((a, b) => b.km - a.km);
 
-  // Km por chofer
   const kmPorChofer = choferes.map((c) => ({
     chofer: c,
-    km: viajesFiltrados.filter((v) => v.choferId === c.id).reduce((a, v) => a + v.kmViaje, 0),
+    km:    viajesFiltrados.filter((v) => v.choferId === c.id).reduce((a, v) => a + v.km, 0),
     count: viajesFiltrados.filter((v) => v.choferId === c.id).length,
   })).filter((x) => x.km > 0).sort((a, b) => b.km - a.km);
 
@@ -52,7 +69,7 @@ export default function InformeViajesPage() {
     <div className="p-8 space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Viajes por período</h1>
-        <p className="text-slate-500 text-sm mt-1">Actividad de viajes filtrada por chofer, camión y fecha</p>
+        <p className="text-slate-500 text-sm mt-1">Actividad derivada de remitos registrados</p>
       </div>
 
       {/* Filtros */}
@@ -170,11 +187,11 @@ export default function InformeViajesPage() {
             <thead>
               <tr className="border-b bg-slate-50">
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Fecha</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Pedido</th>
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Camión</th>
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Chofer</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Origen</th>
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Destino</th>
-                <th className="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">KM</th>
+                <th className="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">KM ida/vuelta</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -182,19 +199,19 @@ export default function InformeViajesPage() {
                 <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">Sin viajes para los filtros seleccionados</td></tr>
               )}
               {viajesFiltrados.map((v) => {
-                const camion = camiones.find((c) => c.id === v.camionId)!;
-                const chofer = choferes.find((c) => c.id === v.choferId)!;
+                const camion = camiones.find((c) => c.id === v.camionId);
+                const chofer = choferes.find((c) => c.id === v.choferId);
                 return (
                   <tr key={v.id} className="hover:bg-slate-50">
                     <td className="px-6 py-3 text-slate-600 whitespace-nowrap">{fmtFecha(v.fecha)}</td>
+                    <td className="px-6 py-3 font-mono text-xs text-slate-500">#{v.numeroPedido}</td>
                     <td className="px-6 py-3">
-                      <span className="font-medium text-slate-900">{camion.patente}</span>
-                      <span className="text-xs text-slate-400 ml-1.5">{camion.marca}</span>
+                      <span className="font-medium text-slate-900">{camion?.patente ?? "—"}</span>
+                      <span className="text-xs text-slate-400 ml-1.5">{camion?.marca}</span>
                     </td>
-                    <td className="px-6 py-3 text-slate-700">{chofer.nombre}</td>
-                    <td className="px-6 py-3 text-slate-600">{v.origen}</td>
+                    <td className="px-6 py-3 text-slate-700">{chofer?.nombre ?? "—"}</td>
                     <td className="px-6 py-3 text-slate-600">{v.destino}</td>
-                    <td className="px-6 py-3 text-right font-medium text-slate-800">{v.kmViaje.toLocaleString("es-AR")}</td>
+                    <td className="px-6 py-3 text-right font-medium text-slate-800">{v.km.toLocaleString("es-AR")}</td>
                   </tr>
                 );
               })}

@@ -4,6 +4,8 @@ import {
   localidades,
   camiones,
   choferes,
+  articulos,
+  itemsPedido,
   EstadoPedido,
 } from "@/lib/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +17,7 @@ import {
   PackageCheck,
   Receipt,
   CircleDot,
+  Package,
 } from "lucide-react";
 
 const ESTADO_CONFIG: Record<
@@ -146,6 +149,7 @@ export default function PedidosPage() {
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Localidad</th>
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Modalidad</th>
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Precio</th>
+                  <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Artículos</th>
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Camión / Chofer</th>
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Estado</th>
                 </tr>
@@ -156,6 +160,7 @@ export default function PedidosPage() {
                   const localidad = localidades.find((l) => l.id === pedido.localidadId)!;
                   const camion = pedido.camionId ? camiones.find((c) => c.id === pedido.camionId) : null;
                   const chofer = pedido.choferId ? choferes.find((c) => c.id === pedido.choferId) : null;
+                  const items  = itemsPedido.filter((i) => i.pedidoId === pedido.id);
 
                   return (
                     <tr
@@ -186,15 +191,35 @@ export default function PedidosPage() {
                       </td>
                       <td className="px-6 py-3.5 text-slate-700">{localidad.nombre}</td>
                       <td className="px-6 py-3.5">
+                        {items.length === 0 ? (
+                          <span className="flex items-center gap-1 text-xs text-slate-300">
+                            <Package className="w-3 h-3" /> Sin artículos
+                          </span>
+                        ) : (
+                          <div className="flex flex-col gap-0.5">
+                            {items.map((item) => {
+                              const art = articulos.find((a) => a.id === item.articuloId);
+                              return (
+                                <span key={item.id} className="inline-flex items-center gap-1 text-xs text-slate-600">
+                                  <span className="font-mono text-slate-400">{art?.codigo}</span>
+                                  {art?.nombre}
+                                  <span className="text-slate-400">×{item.cantidad}</span>
+                                </span>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-3.5">
                         <span
                           className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
-                            pedido.modalidad === "SIP"
+                            pedido.modalidad === "CIP"
                               ? "bg-orange-100 text-orange-700"
                               : "bg-teal-100 text-teal-700"
                           }`}
                         >
                           {pedido.modalidad}
-                          {pedido.modalidad === "SIP" && pedido.tonelaje !== null && (
+                          {pedido.modalidad === "CIP" && pedido.tonelaje !== null && (
                             <span className="ml-1 font-normal text-orange-500">· {pedido.tonelaje}t</span>
                           )}
                         </span>

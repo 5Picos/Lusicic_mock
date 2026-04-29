@@ -3,6 +3,7 @@
 import { useState } from "react";
 import {
   remitos as remitosIniciales, pedidos, clientes, localidades, proveedores,
+  articulos, itemsPedido,
   Remito, Gasto,
 } from "@/lib/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, FileText, PackageCheck, AlertCircle, Landmark } from "lucide-react";
+import { Plus, FileText, PackageCheck, AlertCircle, Landmark, Package } from "lucide-react";
 
 const remitosFacturadosIds = ["rem3", "rem2", "rem4"];
 const HOY = new Date().toISOString().split("T")[0];
@@ -246,6 +247,7 @@ export default function RemitosPage() {
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">N° Pedido</th>
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Cliente destino</th>
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Localidad</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Artículos</th>
                 <th className="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Precio</th>
                 <th className="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Peaje</th>
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Estado</th>
@@ -257,6 +259,7 @@ export default function RemitosPage() {
                 const cliente  = clientes.find((c) => c.id === pedido.clienteDestinoId)!;
                 const loc      = localidades.find((l) => l.id === pedido.localidadId)!;
                 const facturado = remitosFacturadosIds.includes(remito.id);
+                const items    = itemsPedido.filter((i) => i.pedidoId === pedido.id);
                 // Buscar gasto de peaje asociado
                 const gastosPeaje = [...gastosExtra].filter((g) => g.pedidoId === pedido.id);
                 const gastoMockPeaje = remito.id === "rem1" ? 18000 : remito.id === "rem2" ? 9200 : remito.id === "rem3" ? 9200 : remito.id === "rem4" ? 12000 : null;
@@ -269,6 +272,22 @@ export default function RemitosPage() {
                     <td className="px-6 py-3.5 font-mono text-slate-500">#{pedido.numeroPedido}</td>
                     <td className="px-6 py-3.5 text-slate-700">{cliente.nombre}</td>
                     <td className="px-6 py-3.5 text-slate-600">{loc.nombre}</td>
+                    <td className="px-6 py-3.5">
+                      {items.length === 0 ? (
+                        <span className="text-xs text-slate-300">—</span>
+                      ) : (
+                        <div className="flex flex-col gap-0.5">
+                          {items.map((item) => {
+                            const art = articulos.find((a) => a.id === item.articuloId);
+                            return (
+                              <span key={item.id} className="text-xs text-slate-600">
+                                {art?.nombre} <span className="text-slate-400">×{item.cantidad}</span>
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </td>
                     <td className="px-6 py-3.5 text-right font-medium text-slate-800">{fmt(pedido.precioAplicado)}</td>
                     <td className="px-6 py-3.5 text-right">
                       {peajeMonto != null ? (
@@ -344,6 +363,33 @@ export default function RemitosPage() {
                 onChange={(e) => setForm((f) => ({ ...f, fecha: e.target.value }))}
               />
             </div>
+
+            {/* Artículos del pedido */}
+            {pedidoSeleccionado && (() => {
+              const items = itemsPedido.filter((i) => i.pedidoId === pedidoSeleccionado.id);
+              if (items.length === 0) return null;
+              return (
+                <div className="border border-slate-200 rounded-lg p-3 space-y-2 bg-slate-50">
+                  <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide flex items-center gap-1.5">
+                    <Package className="w-3.5 h-3.5" /> Artículos del pedido
+                  </p>
+                  <div className="divide-y divide-slate-100">
+                    {items.map((item) => {
+                      const art = articulos.find((a) => a.id === item.articuloId);
+                      return (
+                        <div key={item.id} className="flex items-center justify-between py-1.5 text-sm">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-xs text-slate-400">{art?.codigo}</span>
+                            <span className="text-slate-700">{art?.nombre}</span>
+                          </div>
+                          <span className="text-xs font-medium text-slate-600">×{item.cantidad}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Notas */}
             <div className="space-y-1.5">

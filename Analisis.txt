@@ -1,0 +1,92 @@
+  Análisis: Código vs SYSTEM_DESIGN
+
+  EN EL CÓDIGO pero NO en el diseño
+
+  ---
+  1. Entidad Viaje — lib/mock-data.ts:52-60
+
+  La entidad Viaje ({ id, camionId, choferId, fecha, kmViaje, origen, destino }) no existe en el modelo de dominio del
+  SYSTEM_DESIGN. El diseño rastrea los viajes indirectamente a través de Order → Receipt → locality.roundTripKm. No hay
+  una entidad de viaje independiente. Esta entidad fue añadida como solución paralela que contradice el modelo.
+
+  ---
+  2. Página /viajes — página huérfana
+
+  app/(app)/viajes/page.tsx existe con un botón "Registrar viaje", pero:
+  - No aparece en la sidebar (components/layout/sidebar.tsx)
+  - No está en la estructura de navegación del diseño (el diseño solo tiene /informes/viajes)
+  - Es una página muerta, inaccesible para el usuario
+
+  ---
+  3. /informes/viajes usa la fuente de datos equivocada
+
+  El informe de viajes consume la entidad Viaje en lugar de derivar los viajes de Pedido/Remito/Camión/Chofer como el
+  diseño intenta. Esto significa que los datos del informe están completamente desconectados de los pedidos y remitos
+  reales.
+
+  ---
+  EN EL SISTEMA_DESIGN pero NO implementado correctamente
+
+  ---
+  4. Invoice/Factura no está en lib/mock-data.ts
+
+  Es una entidad de primera clase en el diseño. En el código:
+  - facturacion/page.tsx:6-25 define su propio facturasMock local
+  - cuenta-corriente/page.tsx:12-38 define su propio facturas local con datos completamente diferentes
+  - Las dos páginas tienen datos de facturas incompatibles y desconectados entre sí
+  - No existe ningún tipo Factura exportado desde mock-data.ts
+
+  ---
+  5. Check/Cheque no está en lib/mock-data.ts
+
+  Entidad de primera clase en el diseño. En el código:
+  - cheques/page.tsx:11-29 define su propio chequesIniciales local
+  - Completamente desconectado de los Cobro con formaPago: "cheque" en mock-data.ts — un cobro con cheque no crea un
+  Cheque
+
+  ---
+  6. InvoiceReceipt (junction) — no implementada
+
+  El diseño exige que receiptId sea único por factura (un remito no puede estar en dos facturas). No existe ningún
+  mecanismo de esta restricción porque no hay datos compartidos.
+
+  ---
+  7. Invoice.status debería ser computado, no estático
+
+  El diseño dice: "Invoice.status is computed, not manually set. The system updates it based on the sum of linked
+  payments vs. total." En el código, el estado está hardcodeado en los arrays locales ("paid", "pending", etc.) sin
+  ningún cálculo.
+
+  ---
+  8. UI de asignación de mantenimientos/vencimientos
+
+  El diseño contempla interfaces para:
+  - Asignar tipos de mantenimiento a camiones (con intervalos personalizados)
+  - Asignar tipos de vencimiento a choferes
+
+  Los datos de asignación existen en mantenimientosAsignados y vencimientosChoferAsignados, pero no hay ninguna UI para
+  crear o editar esas asignaciones. La relación solo existe en el mock, no es gestionable.
+
+  ---
+  Resumen ejecutivo
+
+  ┌────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────┐
+  │                                        │                                Problema                                │
+  ├────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Viaje entity                           │ En código, ausente en diseño — contradice el modelo de km via locality │
+  ├────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ /viajes page                           │ Huérfana: no está en sidebar ni en el diseño                           │
+  ├────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Factura                                │ Sin entidad compartida; dos páginas tienen datos desconectados         │
+  ├────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Cheque                                 │ Sin entidad compartida; desconectado de Cobro                          │
+  ├────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ InvoiceReceipt                         │ No implementado                                                        │
+  ├────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Invoice.status                         │ Estático en lugar de computado desde pagos                             │
+  ├────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Asignación mantenimientos/vencimientos │ Solo datos, sin UI                                                     │
+  └────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────┘
+
+  La acción más impactante es mover Factura y Cheque a lib/mock-data.ts como entidades compartidas, y eliminar o
+  reconectar la entidad Viaje.
