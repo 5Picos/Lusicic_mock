@@ -3,7 +3,7 @@ import type {
   OrderLine, PriceList, LocalityPrice, Order, Receipt,
   MaintenanceType, AssignedMaintenance, MaintenanceRecord,
   DriverExpiryType, DriverExpiryAssigned, ExpiryRecord,
-  ExpenseType, Supplier, Expense,
+  ExpenseType, Supplier, Expense, User,
 } from './types'
 
 // ── Trucks ─────────────────────────────────────────────────────────────────
@@ -173,4 +173,11 @@ export const expiryRecords: ExpiryRecord[] = [
 export const expenses: Expense[] = [
   { id: 'ex1', supplierId: 'su1', date: '2026-04-12', concept: 'Combustible viaje Bahía',              truckId: 'tr3', orderId: null,  amount: 45_000, paymentMethod: 'cash', reference: '', notes: '' },
   { id: 'ex2', supplierId: 'su2', date: '2026-04-12', concept: 'Peaje R-0041 — Autopista del Sol km 37', truckId: 'tr3', orderId: 'or3', amount: 8_200,  paymentMethod: 'cash', reference: '', notes: '' },
+]
+
+// ── Users ─────────────────────────────────────────────────────────────────────
+export const users: User[] = [
+  { id: 'usr1', name: 'Gustavo Administrador', email: 'admin@flotatrack.com',      role: 'admin' },
+  { id: 'usr2', name: 'María Operadora',       email: 'moperadora@flotatrack.com', role: 'operador' },
+  { id: 'usr3', name: 'Carlos Despachante',    email: 'cdespacho@flotatrack.com',  role: 'operador' },
 ]

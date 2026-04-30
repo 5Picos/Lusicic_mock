@@ -204,3 +204,12 @@ export interface Expense {
   reference: string
   notes: string
 }
+
+export type UserRole = 'admin' | 'operador'
+
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: UserRole
+}
