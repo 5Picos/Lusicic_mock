@@ -1,0 +1,105 @@
+<h2>¿Cómo se comporta el sidebar?</h2>
+<p class="subtitle">Con ~20 páginas en 4 grupos, el sidebar necesita ser navegable sin ocupar demasiado espacio. Tres opciones:</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; height:220px; display:flex;">
+      <!-- Sidebar fijo -->
+      <div style="width:160px; background:#fff; border-right:1px solid #e2e8f0; padding:12px 0; flex-shrink:0; font-size:11px; font-family:sans-serif;">
+        <div style="padding:0 12px 8px; font-weight:700; color:#1e293b; font-size:12px;">FlotaTrack</div>
+        <div style="padding:4px 12px; color:#64748b; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; margin-top:4px;">Maestros</div>
+        <div style="padding:4px 12px; color:#1e293b; background:#eff6ff; border-right:2px solid #2563eb;">🚛 Camiones</div>
+        <div style="padding:4px 12px; color:#64748b;">👤 Choferes</div>
+        <div style="padding:4px 12px; color:#64748b;">🏢 Clientes</div>
+        <div style="padding:4px 12px; color:#64748b;">📦 Artículos</div>
+        <div style="padding:4px 12px; color:#64748b; font-size:10px;">+ 5 más...</div>
+        <div style="padding:4px 12px; color:#64748b; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; margin-top:6px;">Mantenimiento</div>
+        <div style="padding:4px 12px; color:#64748b;">🔧 Dashboard</div>
+        <div style="padding:4px 12px; color:#64748b;">📋 Tipos</div>
+        <div style="padding:4px 12px; color:#64748b; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; margin-top:6px;">Administración</div>
+        <div style="padding:4px 12px; color:#64748b;">📄 Pedidos</div>
+      </div>
+      <!-- Contenido -->
+      <div style="flex:1; padding:12px; background:#f8fafc;">
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:4px; height:40px; margin-bottom:6px;"></div>
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:4px; height:100px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Sidebar fijo con grupos como encabezados</h3>
+      <p>Siempre visible, ~200px de ancho. Los 4 grupos (Maestros, Mantenimiento, Administración, Informes) son encabezados de sección fijos —no colapsables— y todos los ítems se ven siempre. Simple y predecible, pero ocupa espacio horizontal permanente.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; height:220px; display:flex;">
+      <!-- Sidebar con accordion -->
+      <div style="width:160px; background:#fff; border-right:1px solid #e2e8f0; padding:12px 0; flex-shrink:0; font-size:11px; font-family:sans-serif;">
+        <div style="padding:0 12px 8px; font-weight:700; color:#1e293b; font-size:12px;">FlotaTrack</div>
+        <!-- Maestros abierto -->
+        <div style="padding:5px 12px; color:#1e293b; font-weight:600; cursor:pointer; display:flex; justify-content:space-between;">
+          <span>Maestros</span><span>▾</span>
+        </div>
+        <div style="padding:3px 12px 3px 20px; color:#1e293b; background:#eff6ff; border-right:2px solid #2563eb;">🚛 Camiones</div>
+        <div style="padding:3px 12px 3px 20px; color:#64748b;">👤 Choferes</div>
+        <div style="padding:3px 12px 3px 20px; color:#64748b;">🏢 Clientes</div>
+        <!-- Mantenimiento cerrado -->
+        <div style="padding:5px 12px; color:#64748b; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; margin-top:2px;">
+          <span>Mantenimiento</span><span>▸</span>
+        </div>
+        <!-- Administración cerrado -->
+        <div style="padding:5px 12px; color:#64748b; font-weight:600; cursor:pointer; display:flex; justify-content:space-between;">
+          <span>Administración</span><span>▸</span>
+        </div>
+        <!-- Informes cerrado -->
+        <div style="padding:5px 12px; color:#64748b; font-weight:600; cursor:pointer; display:flex; justify-content:space-between;">
+          <span>Informes</span><span>▸</span>
+        </div>
+      </div>
+      <!-- Contenido -->
+      <div style="flex:1; padding:12px; background:#f8fafc;">
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:4px; height:40px; margin-bottom:6px;"></div>
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:4px; height:100px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Sidebar con accordion por grupo</h3>
+      <p>Los 4 grupos se colapsan y expanden. Solo el grupo activo muestra sus ítems. Reduce el scroll vertical y mantiene el foco en la sección de trabajo actual. Es el patrón del diseño doc original.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; height:220px; display:flex;">
+      <!-- Sidebar colapsable (rail) -->
+      <div style="width:44px; background:#fff; border-right:1px solid #e2e8f0; padding:10px 0; flex-shrink:0; font-size:16px; text-align:center;">
+        <div style="padding:6px; margin-bottom:8px; font-weight:700; color:#2563eb; font-size:12px;">FT</div>
+        <div style="padding:6px; background:#eff6ff; border-right:2px solid #2563eb;" title="Camiones">🚛</div>
+        <div style="padding:6px; color:#94a3b8;" title="Choferes">👤</div>
+        <div style="padding:6px; color:#94a3b8;" title="Clientes">🏢</div>
+        <div style="padding:6px; color:#94a3b8;" title="Artículos">📦</div>
+        <div style="padding:6px; color:#94a3b8;" title="Dashboard">🔧</div>
+        <div style="padding:6px; color:#94a3b8;" title="Pedidos">📄</div>
+        <div style="padding:6px; color:#94a3b8;" title="Gastos">💰</div>
+      </div>
+      <!-- Sidebar expandido (hover/toggle) que se superpone -->
+      <div style="width:140px; background:#fff; border-right:1px solid #e2e8f0; padding:12px 0; flex-shrink:0; font-size:11px; font-family:sans-serif; box-shadow:2px 0 8px rgba(0,0,0,0.1);">
+        <div style="padding:0 12px 8px; font-weight:700; color:#1e293b; font-size:12px;">FlotaTrack ✕</div>
+        <div style="padding:4px 12px; color:#64748b; font-size:10px; font-weight:600; text-transform:uppercase;">Maestros</div>
+        <div style="padding:4px 12px; color:#1e293b; background:#eff6ff; border-right:2px solid #2563eb;">🚛 Camiones</div>
+        <div style="padding:4px 12px; color:#64748b;">👤 Choferes</div>
+        <div style="padding:4px 12px; color:#64748b;">🏢 Clientes</div>
+      </div>
+      <!-- Contenido (más angosto) -->
+      <div style="flex:1; padding:12px; background:#f8fafc;">
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:4px; height:40px; margin-bottom:6px;"></div>
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:4px; height:100px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Rail colapsable (íconos ↔ texto completo)</h3>
+      <p>Por defecto muestra solo íconos (44px). Al hacer click en un botón o hover, se expande a sidebar completo (200px) que puede superponerse o empujar el contenido. Maximiza el espacio de contenido, pero requiere que el usuario aprenda los íconos.</p>
+    </div>
+  </div>
+
+</div>

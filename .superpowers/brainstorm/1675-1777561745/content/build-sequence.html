@@ -1,0 +1,151 @@
+<h2>Sección 4 — Secuencia de construcción</h2>
+<p class="subtitle">Las 3 páginas prioritarias validan todos los patrones del sistema. El resto se construye más rápido sobre esa base.</p>
+
+<div style="font-family:'Inter',system-ui,sans-serif; display:flex; flex-direction:column; gap:24px; margin-top:8px;">
+
+  <!-- Roadmap visual -->
+  <div class="section">
+    <h3>Orden de construcción por etapas</h3>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+
+      <!-- Etapa 0 -->
+      <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:14px; display:flex; gap:14px; align-items:flex-start;">
+        <div style="background:#1e293b; color:#fff; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px;">0</div>
+        <div>
+          <div style="font-weight:600; color:#1e293b; font-size:13px; margin-bottom:4px;">Scaffolding — shell + mock data</div>
+          <div style="font-size:11px; color:#475569; display:flex; flex-wrap:wrap; gap:6px;">
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">Layout shell (sidebar accordion + topbar)</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">lib/mock-data.ts con todos los tipos</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">Sistema de colores en Tailwind config</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">StatusBadge component</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 1 -->
+      <div style="background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:14px; display:flex; gap:14px; align-items:flex-start;">
+        <div style="background:#2563eb; color:#fff; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px;">1</div>
+        <div>
+          <div style="font-weight:600; color:#1e293b; font-size:13px; margin-bottom:2px;">/dashboard — Valida alertas + cards tipo A</div>
+          <div style="font-size:11px; color:#64748b; margin-bottom:6px;">Primer contacto real con el sistema. Si las alertas se ven bien aquí, se ven bien en toda la app.</div>
+          <div style="font-size:11px; color:#475569; display:flex; flex-wrap:wrap; gap:6px;">
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">SummaryCard tipo A (alertas)</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Tabla de alertas de camiones</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Tabla de alertas de choferes</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Lógica de máquina de estados</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Ordenamiento por prioridad</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 2 -->
+      <div style="background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:14px; display:flex; gap:14px; align-items:flex-start;">
+        <div style="background:#2563eb; color:#fff; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px;">2</div>
+        <div>
+          <div style="font-weight:600; color:#1e293b; font-size:13px; margin-bottom:2px;">/pedidos — Valida cards tipo C + Modal + Sheet</div>
+          <div style="font-size:11px; color:#64748b; margin-bottom:6px;">Primera página con formulario complejo. Valida ambos patrones de dialog.</div>
+          <div style="font-size:11px; color:#475569; display:flex; flex-wrap:wrap; gap:6px;">
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">SummaryCard tipo C (informativas)</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">DataTable con toolbar</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Lifecycle badges (pendiente→facturado)</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Modal "Asignar" (camión + chofer)</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Sheet "Nuevo pedido" (cliente + localidad + lista + artículos)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 3 -->
+      <div style="background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:14px; display:flex; gap:14px; align-items:flex-start;">
+        <div style="background:#2563eb; color:#fff; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px;">3</div>
+        <div>
+          <div style="font-weight:600; color:#1e293b; font-size:13px; margin-bottom:2px;">/remitos — Valida panel ámbar + Sheet multi-sección</div>
+          <div style="font-size:11px; color:#64748b; margin-bottom:6px;">El Sheet más complejo del sistema (artículos + peajes). Si funciona aquí, funciona en todo.</div>
+          <div style="font-size:11px; color:#475569; display:flex; flex-wrap:wrap; gap:6px;">
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Panel ámbar de pendientes</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Tabla de remitos existentes</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Sheet "Registrar remito" sección artículos (read-only)</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Sheet sección peajes (editable por fila)</span>
+            <span style="background:#eff6ff; color:#1d4ed8; padding:2px 7px; border-radius:4px;">Lógica auto-generación de gastos al guardar</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 4 -->
+      <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:14px; display:flex; gap:14px; align-items:flex-start;">
+        <div style="background:#64748b; color:#fff; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px;">4</div>
+        <div>
+          <div style="font-weight:600; color:#1e293b; font-size:13px; margin-bottom:4px;">Maestros — catálogos y ABMs simples</div>
+          <div style="font-size:11px; color:#475569; display:flex; flex-wrap:wrap; gap:6px;">
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/camiones</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/choferes</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/clientes</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/proveedores</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/articulos</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/localidades</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/precios</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/tipos-gasto</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/usuarios</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 5 -->
+      <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:14px; display:flex; gap:14px; align-items:flex-start;">
+        <div style="background:#64748b; color:#fff; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px;">5</div>
+        <div>
+          <div style="font-weight:600; color:#1e293b; font-size:13px; margin-bottom:4px;">Administración — facturación y cobros</div>
+          <div style="font-size:11px; color:#475569; display:flex; flex-wrap:wrap; gap:6px;">
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/facturacion</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/cuenta-corriente</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/cobros</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/cheques</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/gastos</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">Mantenimiento historial</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 6 -->
+      <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:14px; display:flex; gap:14px; align-items:flex-start;">
+        <div style="background:#64748b; color:#fff; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px;">6</div>
+        <div>
+          <div style="font-weight:600; color:#1e293b; font-size:13px; margin-bottom:4px;">Informes — vistas de solo lectura</div>
+          <div style="font-size:11px; color:#475569; display:flex; flex-wrap:wrap; gap:6px;">
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/informes/gastos</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/informes/ingresos</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/informes/comparativo</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/informes/viajes</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/informes/peajes</span>
+            <span style="background:#f1f5f9; padding:2px 7px; border-radius:4px;">/informes/facturas-destino</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Nota sobre estructura de carpetas -->
+  <div class="section">
+    <h3>Estructura de carpetas (Next.js App Router)</h3>
+    <div style="background:#1e293b; border-radius:8px; padding:16px; font-family:'Courier New',monospace; font-size:11px; color:#94a3b8; line-height:1.8;">
+      <div><span style="color:#64748b;">app/</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#64748b;">layout.tsx</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#475569;">← shell: sidebar + topbar</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#e2e8f0;">dashboard/page.tsx</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#e2e8f0;">pedidos/page.tsx</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#e2e8f0;">remitos/page.tsx</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#e2e8f0;">informes/</span></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2e8f0;">gastos/page.tsx</span></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2e8f0;">...</span></div>
+      <div><span style="color:#64748b;">components/</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#e2e8f0;">StatusBadge.tsx</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#475569;">← pill de estado reutilizable</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#e2e8f0;">SummaryCard.tsx</span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#475569;">← variante A (alerta) y C (info)</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#e2e8f0;">DataTable.tsx</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#475569;">← tabla con toolbar</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#e2e8f0;">AmberPanel.tsx</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#475569;">← panel de pendientes urgentes</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#e2e8f0;">PageHeader.tsx</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#475569;">← título + subtítulo + acción</span></div>
+      <div><span style="color:#64748b;">lib/</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#e2e8f0;">mock-data.ts</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#475569;">← todos los tipos e interfaces</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#e2e8f0;">alert-engine.ts</span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#475569;">← lógica de máquina de estados</span></div>
+    </div>
+  </div>
+
+</div>

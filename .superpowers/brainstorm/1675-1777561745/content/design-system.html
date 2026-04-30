@@ -1,0 +1,138 @@
+<h2>Sección 1 — Sistema de diseño</h2>
+<p class="subtitle">Los tokens base que unifican las ~20 páginas de FlotaTrack. Todo lo demás se construye sobre esto.</p>
+
+<div style="display:flex; flex-direction:column; gap:24px; margin-top:8px; font-family:'Inter',system-ui,sans-serif;">
+
+  <!-- Paleta de colores -->
+  <div class="section">
+    <h3>Paleta de colores</h3>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;">Neutrales (base del sistema)</div>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div style="width:52px;height:36px;background:#ffffff;border:1px solid #e2e8f0;border-radius:5px;"></div>
+          <div style="font-size:9px;color:#64748b;margin-top:3px;">white<br>fondo principal</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:52px;height:36px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:5px;"></div>
+          <div style="font-size:9px;color:#64748b;margin-top:3px;">slate-50<br>fondo página</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:52px;height:36px;background:#f1f5f9;border-radius:5px;"></div>
+          <div style="font-size:9px;color:#64748b;margin-top:3px;">slate-100<br>hover filas</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:52px;height:36px;background:#e2e8f0;border-radius:5px;"></div>
+          <div style="font-size:9px;color:#64748b;margin-top:3px;">slate-200<br>bordes</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:52px;height:36px;background:#64748b;border-radius:5px;"></div>
+          <div style="font-size:9px;color:#64748b;margin-top:3px;">slate-500<br>texto secundario</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:52px;height:36px;background:#1e293b;border-radius:5px;"></div>
+          <div style="font-size:9px;color:#64748b;margin-top:3px;">slate-800<br>texto principal</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;">Azul — acento principal (botones, links, selección)</div>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div style="width:52px;height:36px;background:#eff6ff;border-radius:5px;"></div>
+          <div style="font-size:9px;color:#64748b;margin-top:3px;">blue-50<br>fondo suave</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:52px;height:36px;background:#bfdbfe;border-radius:5px;"></div>
+          <div style="font-size:9px;color:#64748b;margin-top:3px;">blue-200<br>borde suave</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:52px;height:36px;background:#2563eb;border-radius:5px;"></div>
+          <div style="font-size:9px;color:#64748b;margin-top:3px;">blue-600<br>acento primario</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:52px;height:36px;background:#1d4ed8;border-radius:5px;"></div>
+          <div style="font-size:9px;color:#64748b;margin-top:3px;">blue-700<br>hover botón</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;">Semáforo de alertas (overdue / upcoming / ok / no_history)</div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <div>
+          <div style="font-size:10px;color:#64748b;margin-bottom:4px;font-weight:600;">OVERDUE</div>
+          <div style="display:flex; gap:4px;">
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#fef2f2;border-radius:4px;border:1px solid #fca5a5;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">red-50<br>fondo fila</div></div>
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#fee2e2;border-radius:4px;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">red-100<br>badge bg</div></div>
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#dc2626;border-radius:4px;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">red-600<br>borde+texto</div></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:#64748b;margin-bottom:4px;font-weight:600;">UPCOMING</div>
+          <div style="display:flex; gap:4px;">
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#fffbeb;border-radius:4px;border:1px solid #fde68a;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">amber-50<br>fondo fila</div></div>
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#fef3c7;border-radius:4px;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">amber-100<br>badge bg</div></div>
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#d97706;border-radius:4px;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">amber-600<br>borde+texto</div></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:#64748b;margin-bottom:4px;font-weight:600;">OK</div>
+          <div style="display:flex; gap:4px;">
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#f0fdf4;border-radius:4px;border:1px solid #86efac;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">green-50<br>fondo fila</div></div>
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#dcfce7;border-radius:4px;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">green-100<br>badge bg</div></div>
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#16a34a;border-radius:4px;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">green-600<br>borde+texto</div></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:#64748b;margin-bottom:4px;font-weight:600;">NO HISTORY</div>
+          <div style="display:flex; gap:4px;">
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#f8fafc;border-radius:4px;border:1px solid #e2e8f0;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">slate-50<br>fondo fila</div></div>
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#f1f5f9;border-radius:4px;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">slate-100<br>badge bg</div></div>
+            <div style="text-align:center;"><div style="width:40px;height:28px;background:#94a3b8;border-radius:4px;"></div><div style="font-size:8px;color:#64748b;margin-top:2px;">slate-400<br>borde+texto</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tipografía -->
+  <div class="section">
+    <h3>Tipografía — Inter</h3>
+    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:6px; padding:16px; display:flex; flex-direction:column; gap:8px;">
+      <div style="font-size:24px; font-weight:700; color:#1e293b; letter-spacing:-0.02em;">Título de página — 24px / 700</div>
+      <div style="font-size:15px; font-weight:600; color:#1e293b;">Encabezado de sección — 15px / 600</div>
+      <div style="font-size:13px; color:#1e293b;">Texto de tabla y formularios — 13px / 400</div>
+      <div style="font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.05em;">Label de columna — 11px / 600 uppercase</div>
+      <div style="font-size:11px; color:#64748b;">Texto secundario / fecha / descripción — 11px / 400</div>
+      <div style="font-size:22px; font-weight:700; color:#1e293b; letter-spacing:-0.02em; font-variant-numeric:tabular-nums;">$2.840.000 · -1.200 km</div>
+      <div style="font-size:10px; color:#94a3b8;">↑ Números grandes con tabular-nums para alineación en tablas</div>
+    </div>
+  </div>
+
+  <!-- Espaciado y radios -->
+  <div class="section">
+    <h3>Espaciado y radios</h3>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div style="background:#fff; border:1px solid #e2e8f0; border-radius:6px; padding:14px;">
+        <div style="font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.04em; margin-bottom:10px;">Padding de tabla (cómoda)</div>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; overflow:hidden;">
+          <div style="padding:9px 14px; border-bottom:1px solid #e2e8f0; font-size:11px; color:#64748b; font-weight:600; background:#f1f5f9;">Columna</div>
+          <div style="padding:9px 14px; border-bottom:1px solid #f1f5f9; font-size:12px; color:#1e293b;">Fila 1 — 9px top/bottom</div>
+          <div style="padding:9px 14px; font-size:12px; color:#1e293b;">Fila 2 — 14px left/right</div>
+        </div>
+      </div>
+      <div style="background:#fff; border:1px solid #e2e8f0; border-radius:6px; padding:14px;">
+        <div style="font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.04em; margin-bottom:10px;">Border radius</div>
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:11px; color:#475569;">
+          <div style="display:flex; align-items:center; gap:8px;"><div style="width:32px;height:20px;background:#e2e8f0;border-radius:4px;flex-shrink:0;"></div>Cards y modals — rounded-lg (8px)</div>
+          <div style="display:flex; align-items:center; gap:8px;"><div style="width:32px;height:20px;background:#e2e8f0;border-radius:4px;flex-shrink:0;"></div>Inputs y botones — rounded-md (6px)</div>
+          <div style="display:flex; align-items:center; gap:8px;"><div style="width:48px;height:18px;background:#fee2e2;border-radius:9999px;flex-shrink:0;"></div>Pill badges — rounded-full</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

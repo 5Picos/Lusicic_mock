@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash .agents/skills/brainstorming/scripts/start-server.sh --project-dir \"C:\\\\Code\\\\lusicic_alt\")",
+      "Bash(npx create-next-app@latest *)",
+      "Bash(npx shadcn@latest *)",
+      "Bash(npm install *)",
+      "Bash(npm test *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "WebFetch(domain:localhost)",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}
