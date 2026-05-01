@@ -149,7 +149,7 @@ export default function CobrosPage() {
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent className="w-[440px] flex flex-col overflow-y-auto">
           <SheetHeader><SheetTitle>Registrar cobro</SheetTitle></SheetHeader>
-          <div className="flex flex-col gap-4 py-4 flex-1">
+          <div className="flex flex-col gap-4 p-4 flex-1">
             <div className="flex flex-col gap-1.5">
               <Label className="text-[10px] uppercase text-slate-500">Factura</Label>
               <Select value={form.invoiceId} onValueChange={v => {

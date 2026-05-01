@@ -86,7 +86,7 @@ export default function MantenimientosPage() {
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent className="w-[420px] flex flex-col">
           <SheetHeader><SheetTitle>Registrar mantenimiento</SheetTitle></SheetHeader>
-          <div className="flex flex-col gap-4 py-4 flex-1">
+          <div className="flex flex-col gap-4 p-4 flex-1">
             <div className="flex flex-col gap-1.5">
               <Label className="text-[10px] uppercase text-slate-500">Camión</Label>
               <Select value={form.truckId} onValueChange={v => setForm(p => ({ ...p, truckId: v ?? '', maintenanceTypeId: '' }))}>

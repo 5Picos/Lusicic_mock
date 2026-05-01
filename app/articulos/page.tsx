@@ -89,7 +89,7 @@ export default function ArticulosPage() {
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent className="w-[400px] flex flex-col">
           <SheetHeader><SheetTitle>{editingItem ? 'Editar artículo' : 'Nuevo artículo'}</SheetTitle></SheetHeader>
-          <div className="flex flex-col gap-4 py-4 flex-1">
+          <div className="flex flex-col gap-4 p-4 flex-1">
             <div className="flex flex-col gap-1.5">
               <Label className="text-[10px] uppercase text-slate-500">Código</Label>
               <Input value={form.code} onChange={e => setForm(p => ({ ...p, code: e.target.value }))} placeholder="HRT-001" autoFocus />

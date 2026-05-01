@@ -201,7 +201,7 @@ export default function PedidosPage() {
         <SheetContent className="w-[480px] flex flex-col overflow-y-auto">
           <SheetHeader><SheetTitle>Nuevo pedido</SheetTitle></SheetHeader>
 
-          <div className="flex flex-col gap-4 py-4 flex-1">
+          <div className="flex flex-col gap-4 p-4 flex-1">
             <div className="flex flex-col gap-3">
               <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 border-t border-slate-100 pt-3">Datos del pedido</div>
               <div className="grid grid-cols-2 gap-3">

@@ -90,7 +90,7 @@ export default function ClientesPage() {
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent className="w-[400px] flex flex-col">
           <SheetHeader><SheetTitle>{editingItem ? 'Editar cliente' : 'Nuevo cliente'}</SheetTitle></SheetHeader>
-          <div className="flex flex-col gap-4 py-4 flex-1">
+          <div className="flex flex-col gap-4 p-4 flex-1">
             <div className="flex flex-col gap-1.5">
               <Label className="text-[10px] uppercase text-slate-500">Nombre</Label>
               <Input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Molinos Río de la Plata" autoFocus />

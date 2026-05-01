@@ -74,7 +74,7 @@ export default function VencimientosChoferPage() {
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent className="w-[400px] flex flex-col">
           <SheetHeader><SheetTitle>Registrar renovación</SheetTitle></SheetHeader>
-          <div className="flex flex-col gap-4 py-4 flex-1">
+          <div className="flex flex-col gap-4 p-4 flex-1">
             <div className="flex flex-col gap-1.5">
               <Label className="text-[10px] uppercase text-slate-500">Chofer</Label>
               <Select value={form.driverId} onValueChange={v => setForm(p => ({ ...p, driverId: v ?? '', expiryTypeId: '' }))}>

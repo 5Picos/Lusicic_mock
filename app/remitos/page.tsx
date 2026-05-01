@@ -132,7 +132,7 @@ export default function RemitosPage() {
         <SheetContent className="w-[480px] flex flex-col overflow-y-auto">
           <SheetHeader><SheetTitle>Registrar remito</SheetTitle></SheetHeader>
 
-          <div className="flex flex-col gap-4 py-4 flex-1">
+          <div className="flex flex-col gap-4 p-4 flex-1">
             <div className="flex flex-col gap-3">
               <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Pedido</div>
               <Select value={selectedOrderId} onValueChange={v => v && openForOrder(v)}>

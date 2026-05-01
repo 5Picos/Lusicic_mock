@@ -130,7 +130,7 @@ export default function LocalidadesPage() {
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent className="w-[480px] flex flex-col overflow-y-auto">
           <SheetHeader><SheetTitle>{editingItem ? 'Editar localidad' : 'Nueva localidad'}</SheetTitle></SheetHeader>
-          <div className="flex flex-col gap-4 py-4 flex-1">
+          <div className="flex flex-col gap-4 p-4 flex-1">
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-1.5">
                 <Label className="text-[10px] uppercase text-slate-500">Nombre</Label>
