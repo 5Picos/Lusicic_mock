@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import {
   LayoutDashboard, Wrench, History, CalendarClock,
   Truck, Users, Building2, Store, Settings, Package,
@@ -72,6 +73,12 @@ export default function Sidebar() {
     g.items.some(item => pathname.startsWith(item.href))
   )?.id ?? 'mantenimiento'
 
+  const [openGroupId, setOpenGroupId] = useState(activeGroupId)
+
+  useEffect(() => {
+    setOpenGroupId(activeGroupId)
+  }, [activeGroupId])
+
   return (
     <aside className="w-[220px] flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full">
       {/* Logo */}
@@ -83,10 +90,11 @@ export default function Sidebar() {
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-2">
         {NAV_GROUPS.map(group => {
-          const isOpen = group.id === activeGroupId
+          const isOpen = group.id === openGroupId
           return (
             <div key={group.id}>
               <button
+                onClick={() => setOpenGroupId(prev => prev === group.id ? '' : group.id)}
                 className={cn(
                   'w-full flex items-center justify-between px-4 py-[7px] text-[11px] font-semibold',
                   isOpen ? 'text-slate-800 bg-slate-50' : 'text-slate-400 hover:text-slate-600',
