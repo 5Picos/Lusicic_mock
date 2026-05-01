@@ -151,6 +151,7 @@ export interface Receipt {
 
 export interface Invoice {
   id: string
+  invoiceNumber: string
   clientId: string
   date: string
   total: number

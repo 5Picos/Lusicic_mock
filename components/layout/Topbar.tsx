@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 
 const BREADCRUMBS: Record<string, { group: string; page: string }> = {
   '/dashboard':                  { group: 'Mantenimiento',  page: 'Dashboard' },
-  '/mantenimientos':             { group: 'Mantenimiento',  page: 'Tipos de mantenimiento' },
+  '/mantenimientos':             { group: 'Mantenimiento',  page: 'Mantenimientos' },
   '/historial':                  { group: 'Mantenimiento',  page: 'Historial' },
   '/vencimientos-chofer':        { group: 'Mantenimiento',  page: 'Venc. choferes' },
   '/camiones':                   { group: 'Maestros',       page: 'Camiones' },

@@ -4,6 +4,7 @@ import type {
   MaintenanceType, AssignedMaintenance, MaintenanceRecord,
   DriverExpiryType, DriverExpiryAssigned, ExpiryRecord,
   ExpenseType, Supplier, Expense, User,
+  Invoice, InvoicePayment, Check,
 } from './types'
 
 // ── Trucks ─────────────────────────────────────────────────────────────────
@@ -180,4 +181,21 @@ export const users: User[] = [
   { id: 'usr1', name: 'Gustavo Administrador', email: 'admin@flotatrack.com',      role: 'admin' },
   { id: 'usr2', name: 'María Operadora',       email: 'moperadora@flotatrack.com', role: 'operador' },
   { id: 'usr3', name: 'Carlos Despachante',    email: 'cdespacho@flotatrack.com',  role: 'operador' },
+]
+
+// ── Invoices ──────────────────────────────────────────────────────────────────
+// or4 está 'invoiced' → inv1 lo cubre (re2, cl2 Cargill, $165.000, pago parcial)
+// or3 está 'delivered' con re1 → sin factura → aparece en AmberPanel de /facturacion
+export const invoices: Invoice[] = [
+  { id: 'inv1', invoiceNumber: 'F-0001', clientId: 'cl2', date: '2026-04-09', total: 165_000, status: 'partially_paid', receiptIds: ['re2'] },
+]
+
+// ── Invoice Payments ──────────────────────────────────────────────────────────
+export const invoicePayments: InvoicePayment[] = [
+  { id: 'ip1', invoiceId: 'inv1', date: '2026-04-20', amount: 80_000, paymentMethod: 'check', reference: 'CHQ-001', notes: '' },
+]
+
+// ── Checks ────────────────────────────────────────────────────────────────────
+export const checks: Check[] = [
+  { id: 'ch1', invoicePaymentId: 'ip1', bank: 'Banco Galicia', checkNumber: '001234', creditDate: '2026-05-15', amount: 80_000, status: 'pending' },
 ]
