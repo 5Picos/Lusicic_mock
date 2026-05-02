@@ -9,9 +9,10 @@ import {
   MapPin, DollarSign, UserCog, ShoppingCart, FileCheck,
   Receipt, CreditCard, Banknote, FileText, PiggyBank,
   TrendingDown, TrendingUp, ArrowLeftRight, Route,
-  Landmark, FileSearch, ChevronRight,
+  Landmark, FileSearch, ChevronRight, LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/lib/auth'
 
 const NAV_GROUPS = [
   {
@@ -68,6 +69,7 @@ const NAV_GROUPS = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const { user, logout } = useAuth()
 
   const activeGroupId = NAV_GROUPS.find(g =>
     g.items.some(item => pathname.startsWith(item.href))
@@ -136,13 +138,20 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="px-4 py-3 border-t border-slate-100 flex items-center gap-2">
-        <div className="w-[26px] h-[26px] rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-semibold text-slate-600">
-          GA
+        <div className="w-[26px] h-[26px] rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-semibold text-slate-600 flex-shrink-0">
+          {user?.name?.charAt(0).toUpperCase() ?? 'U'}
         </div>
-        <div>
-          <div className="text-[11px] font-medium text-slate-800">Admin</div>
-          <div className="text-[10px] text-slate-400">Operador</div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[11px] font-medium text-slate-800 truncate">{user?.name ?? 'Usuario'}</div>
+          <div className="text-[10px] text-slate-400 truncate">{user?.email ?? ''}</div>
         </div>
+        <button
+          onClick={logout}
+          className="text-slate-400 hover:text-slate-600 flex-shrink-0"
+          title="Cerrar sesión"
+        >
+          <LogOut size={14} />
+        </button>
       </div>
     </aside>
   )
