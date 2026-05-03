@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import {
-  LayoutDashboard, Wrench, History, CalendarClock,
+  LayoutDashboard, Wrench, History, CalendarClock, ClipboardList, Link2,
   Truck, Users, Building2, Store, Settings, Package,
   MapPin, DollarSign, UserCog, ShoppingCart, FileCheck,
   Receipt, CreditCard, Banknote, FileText, PiggyBank,
@@ -19,8 +19,6 @@ const NAV_GROUPS = [
     id: 'maestros',
     label: 'Maestros',
     items: [
-      { href: '/camiones',    label: 'Camiones',       icon: Truck },
-      { href: '/choferes',    label: 'Choferes',       icon: Users },
       { href: '/clientes',    label: 'Clientes',       icon: Building2 },
       { href: '/proveedores', label: 'Proveedores',    icon: Store },
       { href: '/tipos-gasto', label: 'Tipos de gasto', icon: Settings },
@@ -34,10 +32,14 @@ const NAV_GROUPS = [
     id: 'mantenimiento',
     label: 'Mantenimiento',
     items: [
-      { href: '/dashboard',           label: 'Dashboard',      icon: LayoutDashboard },
-      { href: '/mantenimientos',      label: 'Tipos mant.',    icon: Wrench },
-      { href: '/historial',           label: 'Historial',      icon: History },
-      { href: '/vencimientos-chofer', label: 'Venc. choferes', icon: CalendarClock },
+      { href: '/camiones',                    label: 'Camiones',       icon: Truck },
+      { href: '/choferes',                    label: 'Choferes',       icon: Users },
+      { href: '/dashboard',                   label: 'Dashboard',      icon: LayoutDashboard },
+      { href: '/tipos-mantenimiento',         label: 'Tipos mant.',    icon: ClipboardList },
+      { href: '/asignaciones-mantenimiento',  label: 'Asignaciones',   icon: Link2 },
+      { href: '/mantenimientos',              label: 'Registros',      icon: Wrench },
+      { href: '/historial',                   label: 'Historial',      icon: History },
+      { href: '/vencimientos-chofer',         label: 'Venc. choferes', icon: CalendarClock },
     ],
   },
   {
