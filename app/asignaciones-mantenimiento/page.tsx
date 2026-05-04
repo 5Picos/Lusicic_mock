@@ -81,7 +81,8 @@ export default function AsignacionesMantenimientoPage() {
     setSheetOpen(true)
   }
 
-  function handleTypeSelect(typeId: string) {
+  function handleTypeSelect(typeId: string | null) {
+    if (!typeId) return
     const mt = maintenanceTypes.find(t => t.id === typeId)
     setForm(p => ({
       ...p,
@@ -208,7 +209,7 @@ export default function AsignacionesMantenimientoPage() {
       />
 
       <div className="px-6 pb-3">
-        <Select value={filterTruckId} onValueChange={setFilterTruckId}>
+        <Select value={filterTruckId} onValueChange={(v) => setFilterTruckId(v ?? 'all')}>
           <SelectTrigger className="w-[260px]">
             <SelectValue placeholder="Filtrar por camión..." />
           </SelectTrigger>
@@ -238,7 +239,7 @@ export default function AsignacionesMantenimientoPage() {
               <Label className="text-[10px] uppercase text-slate-500">Camión *</Label>
               <Select
                 value={form.truckId}
-                onValueChange={v => setForm(p => ({ ...p, truckId: v, maintenanceTypeId: '' }))}
+                onValueChange={v => setForm(p => ({ ...p, truckId: v ?? '', maintenanceTypeId: '' }))}
                 disabled={!!editingItem}
               >
                 <SelectTrigger><SelectValue placeholder="Seleccionar camión..." /></SelectTrigger>
