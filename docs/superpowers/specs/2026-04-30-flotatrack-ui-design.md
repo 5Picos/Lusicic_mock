@@ -1,4 +1,4 @@
-# FlotaTrack — UI Design Spec
+# Lusicic — UI Design Spec
 
 **Fecha:** 2026-04-30
 **Stack:** Next.js 16 App Router · Tailwind CSS v4 · shadcn/ui · TypeScript · Inter (fuente)
@@ -70,7 +70,7 @@ Cargada via `next/font/google`. `font-variant-numeric: tabular-nums` aplicado a 
 ### Sidebar (220px fijo)
 
 - Fondo: `white` (contrasta con el fondo de página `slate-50`)
-- **Header:** logo "FlotaTrack" 15px/700 + subtítulo "Gestión de flota" en slate-400
+- **Header:** logo "Lusicic" 15px/700 + subtítulo "Gestión de flota" en slate-400
 - **Nav:** 4 grupos accordion — solo el grupo de la página activa se expande; los demás muestran solo el label con chevron
   - Grupo colapsado: label 11px/600 slate-400 + chevron `▸`
   - Grupo expandido: label 11px/600 slate-800 + chevron `▾` + fondo slate-50

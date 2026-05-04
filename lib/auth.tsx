@@ -19,7 +19,7 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(() => {
     if (typeof window === 'undefined') return null
-    const stored = localStorage.getItem('flotatrack_user')
+    const stored = localStorage.getItem('lusicic_user')
     return stored ? JSON.parse(stored) : null
   })
 
@@ -28,13 +28,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const name = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
     const userData: AuthUser = { name, email }
     setUser(userData)
-    localStorage.setItem('flotatrack_user', JSON.stringify(userData))
+    localStorage.setItem('lusicic_user', JSON.stringify(userData))
     return true
   }
 
   function logout() {
     setUser(null)
-    localStorage.removeItem('flotatrack_user')
+    localStorage.removeItem('lusicic_user')
   }
 
   return (

@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 
 export default function LoginPage() {
   const { login } = useAuth()
-  const [email, setEmail] = useState('admin@flotatrack.com')
+  const [email, setEmail] = useState('admin@lusicic.com')
   const [password, setPassword] = useState('admin123')
   const [error, setError] = useState(false)
 
@@ -22,7 +22,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-slate-50 flex items-center justify-center">
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full max-w-[360px] p-8">
         <div className="mb-7">
-          <div className="text-[18px] font-bold text-slate-800 tracking-tight">FlotaTrack</div>
+          <div className="text-[18px] font-bold text-slate-800 tracking-tight">Lusicic</div>
           <div className="text-[12px] text-slate-400 mt-0.5">Gestión de flota</div>
         </div>
 
@@ -55,7 +55,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-5 text-[11px] text-slate-400 text-center">
-          Demo: <span className="font-medium">admin@flotatrack.com</span> / <span className="font-medium">admin123</span>
+          Demo: <span className="font-medium">admin@lusicic.com</span> / <span className="font-medium">admin123</span>
         </p>
       </div>
     </div>

@@ -1,8 +1,8 @@
-# FlotaTrack — System Design
+# Lusicic — System Design
 
 ## Overview
 
-FlotaTrack is a web-based management system for transport companies. It covers four main domains:
+Lusicic is a web-based management system for transport companies. It covers four main domains:
 
 1. **Maintenance tracking** — alerts when trucks or drivers are due for service or document renewal, based on elapsed time and/or accumulated kilometers.
 2. **Order and billing management** — tracks transport orders from reception through delivery, receipts, invoicing, and accounts receivable.

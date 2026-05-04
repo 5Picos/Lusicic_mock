@@ -178,9 +178,9 @@ export const expenses: Expense[] = [
 
 // ── Users ─────────────────────────────────────────────────────────────────────
 export const users: User[] = [
-  { id: 'usr1', name: 'Gustavo Administrador', email: 'admin@flotatrack.com',      role: 'admin' },
-  { id: 'usr2', name: 'María Operadora',       email: 'moperadora@flotatrack.com', role: 'operador' },
-  { id: 'usr3', name: 'Carlos Despachante',    email: 'cdespacho@flotatrack.com',  role: 'operador' },
+  { id: 'usr1', name: 'Gustavo Administrador', email: 'admin@lusicic.com',      role: 'admin' },
+  { id: 'usr2', name: 'María Operadora',       email: 'moperadora@lusicic.com', role: 'operador' },
+  { id: 'usr3', name: 'Carlos Despachante',    email: 'cdespacho@lusicic.com',  role: 'operador' },
 ]
 
 // ── Invoices ──────────────────────────────────────────────────────────────────

@@ -7,7 +7,7 @@ import AuthLayout from '@/components/layout/AuthLayout'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'FlotaTrack',
+  title: 'Lusicic',
   description: 'Sistema de gestión de flota',
 }
 

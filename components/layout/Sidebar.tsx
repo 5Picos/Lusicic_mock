@@ -87,7 +87,7 @@ export default function Sidebar() {
     <aside className="w-[220px] flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full">
       {/* Logo */}
       <div className="px-4 py-4 border-b border-slate-100">
-        <div className="text-[15px] font-bold text-slate-800 tracking-tight">FlotaTrack</div>
+        <div className="text-[15px] font-bold text-slate-800 tracking-tight">Lusicic</div>
         <div className="text-[11px] text-slate-400 mt-0.5">Gestión de flota</div>
       </div>
 
