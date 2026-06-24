@@ -10,20 +10,30 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { users as initialItems } from '@/lib/mock-data'
-import type { User, UserRole } from '@/lib/types'
+import type { User, UserRole, Section } from '@/lib/types'
 import { Plus } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 const ROLE_LABELS: Record<UserRole, string> = {
   admin: 'Administrador',
   operador: 'Operador',
 }
 
+const SECTION_LABELS: Record<Section, string> = {
+  maestros: 'Maestros',
+  mantenimiento: 'Mantenimiento',
+  administracion: 'Administración',
+  informes: 'Informes',
+}
+
+const ALL_SECTIONS: Section[] = ['maestros', 'mantenimiento', 'administracion', 'informes']
+
 export default function UsuariosPage() {
   const [items, setItems] = useState(initialItems)
   const [search, setSearch] = useState('')
   const [sheetOpen, setSheetOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<User | null>(null)
-  const [form, setForm] = useState({ name: '', email: '', role: 'operador' as UserRole })
+  const [form, setForm] = useState({ name: '', email: '', role: 'operador' as UserRole, permissions: [] as Section[] })
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
   const filtered = useMemo(() =>
@@ -36,22 +46,32 @@ export default function UsuariosPage() {
 
   function openNew() {
     setEditingItem(null)
-    setForm({ name: '', email: '', role: 'operador' })
+    setForm({ name: '', email: '', role: 'operador', permissions: [] })
     setSheetOpen(true)
   }
 
   function openEdit(item: User) {
     setEditingItem(item)
-    setForm({ name: item.name, email: item.email, role: item.role })
+    setForm({ name: item.name, email: item.email, role: item.role, permissions: item.permissions })
     setSheetOpen(true)
+  }
+
+  function togglePermission(section: Section) {
+    setForm(p => ({
+      ...p,
+      permissions: p.permissions.includes(section)
+        ? p.permissions.filter(s => s !== section)
+        : [...p.permissions, section],
+    }))
   }
 
   function handleSave() {
     if (!form.name.trim() || !form.email.trim()) return
+    const data = { ...form, name: form.name.trim(), email: form.email.trim(), permissions: form.role === 'admin' ? ALL_SECTIONS : form.permissions }
     if (editingItem) {
-      setItems(prev => prev.map(i => i.id === editingItem.id ? { ...editingItem, ...form, name: form.name.trim(), email: form.email.trim() } : i))
+      setItems(prev => prev.map(i => i.id === editingItem.id ? { ...editingItem, ...data } : i))
     } else {
-      setItems(prev => [...prev, { id: `usr${Date.now()}`, ...form, name: form.name.trim(), email: form.email.trim() }])
+      setItems(prev => [...prev, { id: `usr${Date.now()}`, ...data }])
     }
     setSheetOpen(false)
   }
@@ -69,19 +89,33 @@ export default function UsuariosPage() {
     {
       key: 'role', header: 'Rol',
       cell: i => (
-        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-          i.role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'
-        }`}>
+        <span className={cn('badge', i.role === 'admin' ? 'badge-blue' : 'badge-slate')}>
           {ROLE_LABELS[i.role]}
         </span>
+      ),
+    },
+    {
+      key: 'permissions', header: 'Secciones',
+      cell: i => i.role === 'admin' ? (
+        <span className="text-[11px] text-slate-400">Todas</span>
+      ) : i.permissions.length === 0 ? (
+        <span className="text-[11px] text-slate-300">—</span>
+      ) : (
+        <div className="flex flex-wrap gap-1">
+          {i.permissions.map(p => (
+            <span key={p} className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600">
+              {SECTION_LABELS[p]}
+            </span>
+          ))}
+        </div>
       ),
     },
     {
       key: 'actions', header: '', className: 'text-right',
       cell: i => (
         <div className="flex items-center justify-end gap-3">
-          <button onClick={() => openEdit(i)} className="text-[11px] text-blue-600 font-medium hover:underline">Editar</button>
-          <button onClick={() => setDeleteId(i.id)} className="text-[11px] text-red-500 font-medium hover:underline">Eliminar</button>
+          <button onClick={() => openEdit(i)} className="row-action">Editar</button>
+          <button onClick={() => setDeleteId(i.id)} className="row-action-danger">Eliminar</button>
         </div>
       ),
     },
@@ -105,17 +139,17 @@ export default function UsuariosPage() {
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent className="w-[400px] flex flex-col">
           <SheetHeader><SheetTitle>{editingItem ? 'Editar usuario' : 'Nuevo usuario'}</SheetTitle></SheetHeader>
-          <div className="flex flex-col gap-4 p-4 flex-1">
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Nombre</Label>
+          <div className="sheet-body">
+            <div className="form-field">
+              <Label className="form-label">Nombre</Label>
               <Input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Juan García" autoFocus />
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Email</Label>
+            <div className="form-field">
+              <Label className="form-label">Email</Label>
               <Input type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} placeholder="usuario@empresa.com" />
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Rol</Label>
+            <div className="form-field">
+              <Label className="form-label">Rol</Label>
               <Select value={form.role} onValueChange={v => setForm(p => ({ ...p, role: (v ?? 'operador') as UserRole }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -124,8 +158,38 @@ export default function UsuariosPage() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="form-field">
+              <Label className="form-label">Acceso a secciones</Label>
+              <div className="flex flex-col gap-1.5">
+                {ALL_SECTIONS.map(section => {
+                  const checked = form.role === 'admin' || form.permissions.includes(section)
+                  const disabled = form.role === 'admin'
+                  return (
+                    <label
+                      key={section}
+                      className={cn(
+                        'flex items-center gap-2.5 px-3 py-2 bg-slate-50 rounded-md',
+                        disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-slate-100',
+                      )}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        disabled={disabled}
+                        onChange={() => togglePermission(section)}
+                        className="h-3.5 w-3.5"
+                      />
+                      <span className="text-[12px] text-slate-700">{SECTION_LABELS[section]}</span>
+                    </label>
+                  )
+                })}
+              </div>
+              {form.role === 'admin' && (
+                <p className="form-hint">Los administradores tienen acceso a todas las secciones.</p>
+              )}
+            </div>
           </div>
-          <SheetFooter className="border-t border-slate-100 pt-3">
+          <SheetFooter className="sheet-section">
             <Button variant="outline" onClick={() => setSheetOpen(false)}>Cancelar</Button>
             <Button onClick={handleSave} disabled={!form.name.trim() || !form.email.trim()}>Guardar</Button>
           </SheetFooter>

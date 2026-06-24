@@ -4,7 +4,7 @@ import { useState } from 'react'
 import PageHeader from '@/components/PageHeader'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { maintenanceRecords, expiryRecords, trucks, drivers, maintenanceTypes, driverExpiryTypes } from '@/lib/mock-data'
+import { maintenanceRecords, expiryRecords, trucks, drivers, maintenanceTypes, maintenanceCategories, driverExpiryTypes } from '@/lib/mock-data'
 
 export default function HistorialPage() {
   const [selectedTruckId, setSelectedTruckId] = useState(trucks[0]?.id ?? '')
@@ -37,28 +37,30 @@ export default function HistorialPage() {
               </SelectContent>
             </Select>
           </div>
-          <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+          <div className="data-card">
             {truckRecords.length === 0 ? (
               <div className="px-4 py-8 text-center text-slate-400 text-[12px]">Sin historial de mantenimiento para este camión</div>
             ) : (
               <table className="w-full border-collapse text-[12px]">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-200">
-                    <th className="px-3.5 py-2 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-[0.04em]">Fecha</th>
-                    <th className="px-3.5 py-2 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-[0.04em]">Tipo</th>
-                    <th className="px-3.5 py-2 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-[0.04em]">Chofer</th>
-                    <th className="px-3.5 py-2 text-right text-[10px] font-semibold text-slate-500 uppercase tracking-[0.04em]">Km</th>
-                    <th className="px-3.5 py-2 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-[0.04em]">Notas</th>
+                    <th className="tbl-th text-left">Fecha</th>
+                    <th className="tbl-th text-left">Categoría</th>
+                    <th className="tbl-th text-left">Tipo</th>
+                    <th className="tbl-th text-left">Chofer</th>
+                    <th className="tbl-th text-right">Km</th>
+                    <th className="tbl-th text-left">Notas</th>
                   </tr>
                 </thead>
                 <tbody>
                   {truckRecords.map(r => (
                     <tr key={r.id} className="border-b border-slate-100 last:border-0">
-                      <td className="px-3.5 py-[9px] tabular-nums text-slate-500">{r.date}</td>
-                      <td className="px-3.5 py-[9px] font-medium text-slate-800">{maintenanceTypes.find(mt => mt.id === r.maintenanceTypeId)?.name ?? '—'}</td>
-                      <td className="px-3.5 py-[9px] text-slate-500">{drivers.find(d => d.id === r.driverId)?.name ?? '—'}</td>
-                      <td className="px-3.5 py-[9px] text-right tabular-nums text-slate-600">{r.kmAtMoment.toLocaleString('es-AR')}</td>
-                      <td className="px-3.5 py-[9px] text-[11px] text-slate-400">{r.notes || '—'}</td>
+                      <td className="tbl-td tabular-nums text-slate-500">{r.date}</td>
+                      <td className="tbl-td text-slate-500">{maintenanceCategories.find(c => c.id === maintenanceTypes.find(mt => mt.id === r.maintenanceTypeId)?.categoryId)?.name ?? '—'}</td>
+                      <td className="tbl-td font-medium text-slate-800">{maintenanceTypes.find(mt => mt.id === r.maintenanceTypeId)?.name ?? '—'}</td>
+                      <td className="tbl-td text-slate-500">{drivers.find(d => d.id === r.driverId)?.name ?? '—'}</td>
+                      <td className="tbl-td text-right tabular-nums text-slate-600">{r.kmAtMoment.toLocaleString('es-AR')}</td>
+                      <td className="tbl-td text-[11px] text-slate-400">{r.notes || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -77,24 +79,24 @@ export default function HistorialPage() {
               </SelectContent>
             </Select>
           </div>
-          <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+          <div className="data-card">
             {driverRecords.length === 0 ? (
               <div className="px-4 py-8 text-center text-slate-400 text-[12px]">Sin historial de vencimientos para este chofer</div>
             ) : (
               <table className="w-full border-collapse text-[12px]">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-200">
-                    <th className="px-3.5 py-2 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-[0.04em]">Fecha</th>
-                    <th className="px-3.5 py-2 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-[0.04em]">Documento</th>
-                    <th className="px-3.5 py-2 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-[0.04em]">Notas</th>
+                    <th className="tbl-th text-left">Fecha</th>
+                    <th className="tbl-th text-left">Documento</th>
+                    <th className="tbl-th text-left">Notas</th>
                   </tr>
                 </thead>
                 <tbody>
                   {driverRecords.map(r => (
                     <tr key={r.id} className="border-b border-slate-100 last:border-0">
-                      <td className="px-3.5 py-[9px] tabular-nums text-slate-500">{r.date}</td>
-                      <td className="px-3.5 py-[9px] font-medium text-slate-800">{driverExpiryTypes.find(t => t.id === r.expiryTypeId)?.name ?? '—'}</td>
-                      <td className="px-3.5 py-[9px] text-[11px] text-slate-400">{r.notes || '—'}</td>
+                      <td className="tbl-td tabular-nums text-slate-500">{r.date}</td>
+                      <td className="tbl-td font-medium text-slate-800">{driverExpiryTypes.find(t => t.id === r.expiryTypeId)?.name ?? '—'}</td>
+                      <td className="tbl-td text-[11px] text-slate-400">{r.notes || '—'}</td>
                     </tr>
                   ))}
                 </tbody>

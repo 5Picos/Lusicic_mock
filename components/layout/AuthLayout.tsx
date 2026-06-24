@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth'
+import { canAccessPath, getFirstAccessibleHref } from '@/lib/nav'
 import Sidebar from '@/components/layout/Sidebar'
 import Topbar from '@/components/layout/Topbar'
 
@@ -16,8 +17,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     if (!ready) return
-    if (!user && pathname !== '/login') router.replace('/login')
-    if (user && pathname === '/login') router.replace('/dashboard')
+    if (!user && pathname !== '/login') { router.replace('/login'); return }
+    if (user && pathname === '/login') { router.replace(getFirstAccessibleHref(user)); return }
+    if (user && pathname !== '/login' && !canAccessPath(user, pathname)) {
+      router.replace(getFirstAccessibleHref(user))
+    }
   }, [ready, user, pathname, router])
 
   if (!ready) return <div className="h-screen bg-slate-50" />

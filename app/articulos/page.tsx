@@ -17,7 +17,7 @@ export default function ArticulosPage() {
   const [search, setSearch] = useState('')
   const [sheetOpen, setSheetOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<Article | null>(null)
-  const [form, setForm] = useState({ code: '', name: '' })
+  const [form, setForm] = useState({ code: '', name: '', unitWeightKg: '' })
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
   const filtered = useMemo(() =>
@@ -30,22 +30,23 @@ export default function ArticulosPage() {
 
   function openNew() {
     setEditingItem(null)
-    setForm({ code: '', name: '' })
+    setForm({ code: '', name: '', unitWeightKg: '' })
     setSheetOpen(true)
   }
 
   function openEdit(item: Article) {
     setEditingItem(item)
-    setForm({ code: item.code, name: item.name })
+    setForm({ code: item.code, name: item.name, unitWeightKg: item.unitWeightKg != null ? String(item.unitWeightKg) : '' })
     setSheetOpen(true)
   }
 
   function handleSave() {
     if (!form.code.trim() || !form.name.trim()) return
+    const unitWeightKg = form.unitWeightKg.trim() ? Number(form.unitWeightKg) : null
     if (editingItem) {
-      setItems(prev => prev.map(i => i.id === editingItem.id ? { ...editingItem, code: form.code.trim(), name: form.name.trim() } : i))
+      setItems(prev => prev.map(i => i.id === editingItem.id ? { ...editingItem, code: form.code.trim(), name: form.name.trim(), unitWeightKg } : i))
     } else {
-      setItems(prev => [...prev, { id: `ar${Date.now()}`, code: form.code.trim(), name: form.name.trim() }])
+      setItems(prev => [...prev, { id: `ar${Date.now()}`, code: form.code.trim(), name: form.name.trim(), unitWeightKg }])
     }
     setSheetOpen(false)
   }
@@ -58,14 +59,15 @@ export default function ArticulosPage() {
   const deletingItem = items.find(i => i.id === deleteId)
 
   const columns: Column<Article>[] = [
-    { key: 'code', header: 'Código', cell: i => <span className="font-mono text-[11px] font-medium text-slate-700">{i.code}</span> },
-    { key: 'name', header: 'Nombre', cell: i => <span className="text-slate-800">{i.name}</span> },
+    { key: 'code',   header: 'Código',     cell: i => <span className="font-mono text-[11px] font-medium text-slate-700">{i.code}</span> },
+    { key: 'name',   header: 'Nombre',     cell: i => <span className="text-slate-800">{i.name}</span> },
+    { key: 'weight', header: 'Peso unit.', className: 'text-right', cell: i => <span className="tabular-nums text-slate-700">{i.unitWeightKg != null ? `${i.unitWeightKg} kg` : '—'}</span> },
     {
       key: 'actions', header: '', className: 'text-right',
       cell: i => (
         <div className="flex items-center justify-end gap-3">
-          <button onClick={() => openEdit(i)} className="text-[11px] text-blue-600 font-medium hover:underline">Editar</button>
-          <button onClick={() => setDeleteId(i.id)} className="text-[11px] text-red-500 font-medium hover:underline">Eliminar</button>
+          <button onClick={() => openEdit(i)} className="row-action">Editar</button>
+          <button onClick={() => setDeleteId(i.id)} className="row-action-danger">Eliminar</button>
         </div>
       ),
     },
@@ -90,13 +92,25 @@ export default function ArticulosPage() {
         <SheetContent className="w-[400px] flex flex-col">
           <SheetHeader><SheetTitle>{editingItem ? 'Editar artículo' : 'Nuevo artículo'}</SheetTitle></SheetHeader>
           <div className="flex flex-col gap-4 p-4 flex-1">
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Código</Label>
+            <div className="form-field">
+              <Label className="form-label">Código</Label>
               <Input value={form.code} onChange={e => setForm(p => ({ ...p, code: e.target.value }))} placeholder="HRT-001" autoFocus />
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Nombre</Label>
+            <div className="form-field">
+              <Label className="form-label">Nombre</Label>
               <Input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Harina de trigo 25kg" />
+            </div>
+            <div className="form-field">
+              <Label className="form-label">Peso unitario (kg)</Label>
+              <Input
+                type="number"
+                min="0"
+                step="0.001"
+                value={form.unitWeightKg}
+                onChange={e => setForm(p => ({ ...p, unitWeightKg: e.target.value }))}
+                placeholder="25"
+              />
+              <span className="form-hint">Se usa para calcular el tonelaje en pedidos y remitos</span>
             </div>
           </div>
           <SheetFooter className="border-t border-slate-100 pt-3">

@@ -39,7 +39,8 @@ export function computeTruckAlertState(
   let dateState: AlertState = 'ok'
 
   if (assignment.kmInterval !== null && assignment.alertKmBefore !== null) {
-    const remaining = lastRecord.kmAtMoment + assignment.kmInterval - truck.realKm
+    const currentKm = truck.geotabKm ?? truck.realKm
+    const remaining = lastRecord.kmAtMoment + assignment.kmInterval - currentKm
     if (remaining <= 0) kmState = 'overdue'
     else if (remaining <= assignment.alertKmBefore) kmState = 'upcoming'
   }

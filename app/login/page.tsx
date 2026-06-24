@@ -49,14 +49,17 @@ export default function LoginPage() {
             />
           </div>
           {error && (
-            <p className="text-[12px] text-red-500">Por favor ingresá tu correo y contraseña.</p>
+            <p className="text-[12px] text-red-500">Email o contraseña incorrectos.</p>
           )}
           <Button type="submit" className="mt-1 w-full">Ingresar</Button>
         </form>
 
-        <p className="mt-5 text-[11px] text-slate-400 text-center">
-          Demo: <span className="font-medium">admin@lusicic.com</span> / <span className="font-medium">admin123</span>
-        </p>
+        <div className="mt-5 text-[11px] text-slate-400 text-center space-y-0.5">
+          <p>Demo (cualquier contraseña):</p>
+          <p className="font-medium text-slate-500">admin@lusicic.com</p>
+          <p className="font-medium text-slate-500">moperadora@lusicic.com</p>
+          <p className="font-medium text-slate-500">cdespacho@lusicic.com</p>
+        </div>
       </div>
     </div>
   )

@@ -6,15 +6,17 @@ import DataTable, { Column } from '@/components/DataTable'
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { maintenanceTypes as initialItems } from '@/lib/mock-data'
+import { maintenanceTypes as initialItems, maintenanceCategories } from '@/lib/mock-data'
 import type { MaintenanceType } from '@/lib/types'
 import { Plus } from 'lucide-react'
 
 type MaintTypeForm = {
   name: string
   description: string
+  categoryId: string
   defaultKmInterval: string
   defaultDaysInterval: string
   defaultAlertKmBefore: string
@@ -22,7 +24,7 @@ type MaintTypeForm = {
 }
 
 const EMPTY_FORM: MaintTypeForm = {
-  name: '', description: '',
+  name: '', description: '', categoryId: '',
   defaultKmInterval: '', defaultDaysInterval: '',
   defaultAlertKmBefore: '', defaultAlertDaysBefore: '',
 }
@@ -56,6 +58,7 @@ export default function TiposMantenimientoPage() {
     setForm({
       name: item.name,
       description: item.description,
+      categoryId: item.categoryId,
       defaultKmInterval: item.defaultKmInterval?.toString() ?? '',
       defaultDaysInterval: item.defaultDaysInterval?.toString() ?? '',
       defaultAlertKmBefore: item.defaultAlertKmBefore?.toString() ?? '',
@@ -65,10 +68,11 @@ export default function TiposMantenimientoPage() {
   }
 
   function handleSave() {
-    if (!form.name.trim()) return
+    if (!form.name.trim() || !form.categoryId) return
     const data: Omit<MaintenanceType, 'id'> = {
       name: form.name.trim(),
       description: form.description.trim(),
+      categoryId: form.categoryId,
       defaultKmInterval: toNullableInt(form.defaultKmInterval),
       defaultDaysInterval: toNullableInt(form.defaultDaysInterval),
       defaultAlertKmBefore: toNullableInt(form.defaultAlertKmBefore),
@@ -91,6 +95,10 @@ export default function TiposMantenimientoPage() {
 
   const columns: Column<MaintenanceType>[] = [
     { key: 'name',        header: 'Nombre',      cell: i => <span className="font-medium text-slate-800">{i.name}</span> },
+    {
+      key: 'category', header: 'Categoría',
+      cell: i => <span className="text-slate-600">{maintenanceCategories.find(c => c.id === i.categoryId)?.name ?? '—'}</span>,
+    },
     { key: 'description', header: 'Descripción', cell: i => <span className="text-slate-500">{i.description || '—'}</span> },
     {
       key: 'kmInterval',
@@ -120,8 +128,8 @@ export default function TiposMantenimientoPage() {
       key: 'actions', header: '', className: 'text-right',
       cell: i => (
         <div className="flex items-center justify-end gap-3">
-          <button onClick={() => openEdit(i)} className="text-[11px] text-blue-600 font-medium hover:underline">Editar</button>
-          <button onClick={() => setDeleteId(i.id)} className="text-[11px] text-red-500 font-medium hover:underline">Eliminar</button>
+          <button onClick={() => openEdit(i)} className="row-action">Editar</button>
+          <button onClick={() => setDeleteId(i.id)} className="row-action-danger">Eliminar</button>
         </div>
       ),
     },
@@ -148,9 +156,9 @@ export default function TiposMantenimientoPage() {
           <SheetHeader>
             <SheetTitle>{editingItem ? 'Editar tipo de mantenimiento' : 'Nuevo tipo de mantenimiento'}</SheetTitle>
           </SheetHeader>
-          <div className="flex flex-col gap-4 p-4 flex-1">
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Nombre *</Label>
+          <div className="sheet-body">
+            <div className="form-field">
+              <Label className="form-label">Nombre *</Label>
               <Input
                 value={form.name}
                 onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
@@ -158,19 +166,28 @@ export default function TiposMantenimientoPage() {
                 autoFocus
               />
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Descripción</Label>
+            <div className="form-field">
+              <Label className="form-label">Categoría *</Label>
+              <Select value={form.categoryId} onValueChange={v => setForm(p => ({ ...p, categoryId: v ?? '' }))}>
+                <SelectTrigger><SelectValue placeholder="Seleccionar categoría..." /></SelectTrigger>
+                <SelectContent>
+                  {maintenanceCategories.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="form-field">
+              <Label className="form-label">Descripción</Label>
               <Input
                 value={form.description}
                 onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
                 placeholder="Descripción opcional"
               />
             </div>
-            <div className="border-t border-slate-100 pt-3">
-              <p className="text-[10px] uppercase text-slate-400 font-semibold mb-3">Intervalos por defecto</p>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-[10px] uppercase text-slate-500">Cada X km</Label>
+            <div className="sheet-section">
+              <p className="section-heading">Intervalos por defecto</p>
+              <div className="form-grid">
+                <div className="form-field">
+                  <Label className="form-label">Cada X km</Label>
                   <Input
                     type="number"
                     min={0}
@@ -179,8 +196,8 @@ export default function TiposMantenimientoPage() {
                     placeholder="10000"
                   />
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-[10px] uppercase text-slate-500">Cada X días</Label>
+                <div className="form-field">
+                  <Label className="form-label">Cada X días</Label>
                   <Input
                     type="number"
                     min={0}
@@ -191,11 +208,11 @@ export default function TiposMantenimientoPage() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-slate-100 pt-3">
-              <p className="text-[10px] uppercase text-slate-400 font-semibold mb-3">Alertas por defecto</p>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-[10px] uppercase text-slate-500">Avisar X km antes</Label>
+            <div className="sheet-section">
+              <p className="section-heading">Alertas por defecto</p>
+              <div className="form-grid">
+                <div className="form-field">
+                  <Label className="form-label">Avisar X km antes</Label>
                   <Input
                     type="number"
                     min={0}
@@ -204,8 +221,8 @@ export default function TiposMantenimientoPage() {
                     placeholder="1000"
                   />
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-[10px] uppercase text-slate-500">Avisar X días antes</Label>
+                <div className="form-field">
+                  <Label className="form-label">Avisar X días antes</Label>
                   <Input
                     type="number"
                     min={0}
@@ -217,9 +234,9 @@ export default function TiposMantenimientoPage() {
               </div>
             </div>
           </div>
-          <SheetFooter className="border-t border-slate-100 pt-3">
+          <SheetFooter className="sheet-section">
             <Button variant="outline" onClick={() => setSheetOpen(false)}>Cancelar</Button>
-            <Button onClick={handleSave} disabled={!form.name.trim()}>Guardar</Button>
+            <Button onClick={handleSave} disabled={!form.name.trim() || !form.categoryId}>Guardar</Button>
           </SheetFooter>
         </SheetContent>
       </Sheet>

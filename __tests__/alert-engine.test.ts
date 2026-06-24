@@ -15,6 +15,7 @@ const TODAY = '2026-04-30'
 const truck: Truck = {
   id: 't1', plate: 'ABC 123', description: '', brand: 'Mercedes', model: 'Actros',
   year: 2020, realKm: 50_000, estimatedKm: 50_500,
+  geotabDeviceId: null, geotabKm: null, geotabKmSyncedAt: null,
 }
 
 const assignment: AssignedMaintenance = {

@@ -1,25 +1,40 @@
 import type {
   Truck, Driver, Client, Locality, LocalityToll, Article,
   OrderLine, PriceList, LocalityPrice, Order, Receipt,
-  MaintenanceType, AssignedMaintenance, MaintenanceRecord,
+  MaintenanceCategory, MaintenanceType, AssignedMaintenance, MaintenanceRecord, VehicleIssueReport,
   DriverExpiryType, DriverExpiryAssigned, ExpiryRecord,
+  Device, EnrollmentCode,
   ExpenseType, Supplier, Expense, User,
   Invoice, InvoicePayment, Check,
 } from './types'
 
 // ── Trucks ─────────────────────────────────────────────────────────────────
 export const trucks: Truck[] = [
-  { id: 'tr1', plate: 'ABC 123', description: 'Unidad 1', brand: 'Mercedes', model: 'Actros', year: 2018, realKm: 87_420, estimatedKm: 88_100 },
-  { id: 'tr2', plate: 'DEF 456', description: 'Unidad 2', brand: 'Scania',   model: 'R450',   year: 2020, realKm: 54_200, estimatedKm: 55_000 },
-  { id: 'tr3', plate: 'GHI 789', description: 'Unidad 3', brand: 'Volvo',    model: 'FH',      year: 2019, realKm: 61_000, estimatedKm: 61_800 },
-  { id: 'tr4', plate: 'JKL 012', description: 'Unidad 4', brand: 'Mercedes', model: 'Atego',   year: 2022, realKm: 22_000, estimatedKm: 22_500 },
+  { id: 'tr1', plate: 'ABC 123', description: 'Unidad 1', brand: 'Mercedes', model: 'Actros', year: 2018, realKm: 87_420, estimatedKm: 88_100, geotabDeviceId: 'b1', geotabKm: 87_850, geotabKmSyncedAt: '2026-06-16T06:00:00Z' },
+  { id: 'tr2', plate: 'DEF 456', description: 'Unidad 2', brand: 'Scania',   model: 'R450',   year: 2020, realKm: 54_200, estimatedKm: 55_000, geotabDeviceId: 'b2', geotabKm: 54_320, geotabKmSyncedAt: '2026-06-16T06:00:00Z' },
+  { id: 'tr3', plate: 'GHI 789', description: 'Unidad 3', brand: 'Volvo',    model: 'FH',      year: 2019, realKm: 61_000, estimatedKm: 61_800, geotabDeviceId: null, geotabKm: null,   geotabKmSyncedAt: null },
+  { id: 'tr4', plate: 'JKL 012', description: 'Unidad 4', brand: 'Mercedes', model: 'Atego',   year: 2022, realKm: 22_000, estimatedKm: 22_500, geotabDeviceId: 'b4', geotabKm: 22_750, geotabKmSyncedAt: '2026-06-16T06:00:00Z' },
 ]
 
 // ── Drivers ─────────────────────────────────────────────────────────────────
 export const drivers: Driver[] = [
-  { id: 'dr1', name: 'Carlos Méndez',   phone: '1145678901', email: 'cmendez@mail.com' },
-  { id: 'dr2', name: 'Roberto Sánchez', phone: '1145678902', email: 'rsanchez@mail.com' },
-  { id: 'dr3', name: 'Juan Pérez',      phone: '1145678903', email: 'jperez@mail.com' },
+  { id: 'dr1', name: 'Carlos Méndez',   phone: '1145678901', email: 'cmendez@mail.com',  defaultTruckId: 'tr1' },
+  { id: 'dr2', name: 'Roberto Sánchez', phone: '1145678902', email: 'rsanchez@mail.com', defaultTruckId: 'tr2' },
+  { id: 'dr3', name: 'Juan Pérez',      phone: '1145678903', email: 'jperez@mail.com',   defaultTruckId: null },
+]
+
+// ── Devices (app de choferes) ─────────────────────────────────────────────────
+export const devices: Device[] = [
+  // dr1: dispositivo activo, con un anterior reemplazado
+  { id: 'dev1', driverId: 'dr1', installationId: 'c0a8e1f2-9b3d-4e5f-8a7b-1c2d3e4f5a6b', platform: 'android', model: 'Samsung Galaxy A52', status: 'active',  enrolledAt: '2026-05-10', lastSeenAt: '2026-06-10', revokedAt: null,         revokedReason: null },
+  { id: 'dev2', driverId: 'dr1', installationId: 'f1e2d3c4-b5a6-4789-9012-3456789abcde', platform: 'android', model: 'Motorola G8',        status: 'revoked', enrolledAt: '2025-11-02', lastSeenAt: '2026-05-09', revokedAt: '2026-05-10', revokedReason: 'Reemplazado por nuevo dispositivo' },
+  // dr3: dispositivo dado de baja manualmente
+  { id: 'dev3', driverId: 'dr3', installationId: 'a9b8c7d6-e5f4-4321-8765-fedcba987654', platform: 'ios',     model: 'iPhone 12',          status: 'revoked', enrolledAt: '2026-02-15', lastSeenAt: '2026-04-30', revokedAt: '2026-05-02', revokedReason: 'Teléfono extraviado' },
+]
+
+export const enrollmentCodes: EnrollmentCode[] = [
+  // dr2: código vigente, aún no canjeado
+  { id: 'ec1', driverId: 'dr2', code: '482913', createdAt: '2026-06-11', expiresAt: '2026-06-13', usedAt: null },
 ]
 
 // ── Clients ──────────────────────────────────────────────────────────────────
@@ -62,16 +77,17 @@ export const localityTolls: LocalityToll[] = [
 
 // ── Articles ─────────────────────────────────────────────────────────────────
 export const articles: Article[] = [
-  { id: 'ar1', code: 'HRT-001', name: 'Harina de trigo 25kg' },
-  { id: 'ar2', code: 'ACE-001', name: 'Aceite de girasol 900ml' },
-  { id: 'ar3', code: 'SEM-001', name: 'Semolín 1kg' },
+  { id: 'ar1', code: 'HRT-001', name: 'Harina de trigo 25kg',    unitWeightKg: 25  },
+  { id: 'ar2', code: 'ACE-001', name: 'Aceite de girasol 900ml', unitWeightKg: 0.9 },
+  { id: 'ar3', code: 'SEM-001', name: 'Semolín 1kg',             unitWeightKg: 1   },
 ]
 
 // ── Price lists ───────────────────────────────────────────────────────────────
 export const priceLists: PriceList[] = [
-  { id: 'pl1', name: 'CIP - 32 toneladas' },
-  { id: 'pl2', name: 'CIP - 38 toneladas' },
-  { id: 'pl3', name: 'FCA' },
+  { id: 'pl1', name: 'CIP - 32 toneladas',  clientId: null, isDefault: true },
+  { id: 'pl2', name: 'CIP - 38 toneladas',  clientId: null, isDefault: false },
+  { id: 'pl3', name: 'FCA',                 clientId: null, isDefault: false },
+  { id: 'pl4', name: 'CIP - 32t (Cargill)', clientId: 'cl2', isDefault: false },
 ]
 
 export const localityPrices: LocalityPrice[] = [
@@ -83,16 +99,18 @@ export const localityPrices: LocalityPrice[] = [
   { id: 'lp06', priceListId: 'pl2', localityId: 'lo2', price: 250_000 },
   { id: 'lp07', priceListId: 'pl3', localityId: 'lo1', price: 155_000 },
   { id: 'lp08', priceListId: 'pl3', localityId: 'lo2', price: 225_000 },
+  { id: 'lp09', priceListId: 'pl4', localityId: 'lo1', price: 140_000 },
+  { id: 'lp10', priceListId: 'pl4', localityId: 'lo2', price: 205_000 },
 ]
 
 // ── Orders ────────────────────────────────────────────────────────────────────
 export const orders: Order[] = [
-  { id: 'or1', orderNumber: 'P-2024-001', date: '2026-04-15', requestingClientId: 'cl1', destinationClientId: 'cl2', localityId: 'lo1', modality: 'CIP', tonnage: 32,   cargoDetail: 'Harina de trigo',  truckId: 'tr1', driverId: 'dr1', appliedPrice: 145_000, status: 'assigned' },
-  { id: 'or2', orderNumber: 'P-2024-002', date: '2026-04-14', requestingClientId: 'cl2', destinationClientId: 'cl3', localityId: 'lo2', modality: 'CIP', tonnage: 38,   cargoDetail: 'Aceite granel',    truckId: 'tr2', driverId: 'dr2', appliedPrice: 250_000, status: 'assigned' },
-  { id: 'or3', orderNumber: 'P-2024-003', date: '2026-04-10', requestingClientId: 'cl1', destinationClientId: 'cl1', localityId: 'lo3', modality: 'FCA', tonnage: null, cargoDetail: 'Semolín',          truckId: 'tr3', driverId: 'dr3', appliedPrice: 190_000, status: 'delivered' },
-  { id: 'or4', orderNumber: 'P-2024-004', date: '2026-04-08', requestingClientId: 'cl3', destinationClientId: 'cl2', localityId: 'lo4', modality: 'CIP', tonnage: 32,   cargoDetail: 'Harina integral',  truckId: 'tr1', driverId: 'dr1', appliedPrice: 165_000, status: 'invoiced' },
-  { id: 'or5', orderNumber: 'P-2024-005', date: '2026-04-28', requestingClientId: 'cl2', destinationClientId: 'cl3', localityId: 'lo1', modality: 'FCA', tonnage: null, cargoDetail: 'Aceite botellas',  truckId: null,  driverId: null,  appliedPrice: 155_000, status: 'pending' },
-  { id: 'or6', orderNumber: 'P-2024-006', date: '2026-04-29', requestingClientId: 'cl1', destinationClientId: 'cl2', localityId: 'lo2', modality: 'CIP', tonnage: 32,   cargoDetail: 'Semolín granel',   truckId: null,  driverId: null,  appliedPrice: 210_000, status: 'pending' },
+  { id: 'or1', orderNumber: 'P-2024-001', date: '2026-04-15', deliveryDate: '2026-04-15', requestingClientId: 'cl1', destinationClientId: 'cl2', localityId: 'lo1', modality: 'CIP', tonnage: 32,   cargoDetail: 'Harina de trigo',  truckId: 'tr1', driverId: 'dr1', appliedPrice: 145_000, status: 'assigned' },
+  { id: 'or2', orderNumber: 'P-2024-002', date: '2026-04-14', deliveryDate: '2026-04-16', requestingClientId: 'cl2', destinationClientId: 'cl3', localityId: 'lo2', modality: 'CIP', tonnage: 38,   cargoDetail: 'Aceite granel',    truckId: 'tr2', driverId: 'dr2', appliedPrice: 250_000, status: 'assigned' },
+  { id: 'or3', orderNumber: 'P-2024-003', date: '2026-04-10', deliveryDate: '2026-04-12', requestingClientId: 'cl1', destinationClientId: 'cl1', localityId: 'lo3', modality: 'FCA', tonnage: null, cargoDetail: 'Semolín',          truckId: 'tr3', driverId: 'dr3', appliedPrice: 190_000, status: 'delivered' },
+  { id: 'or4', orderNumber: 'P-2024-004', date: '2026-04-08', deliveryDate: '2026-04-09', requestingClientId: 'cl3', destinationClientId: 'cl2', localityId: 'lo4', modality: 'CIP', tonnage: 32,   cargoDetail: 'Harina integral',  truckId: 'tr1', driverId: 'dr1', appliedPrice: 165_000, status: 'invoiced' },
+  { id: 'or5', orderNumber: 'P-2024-005', date: '2026-04-28', deliveryDate: '2026-04-30', requestingClientId: 'cl2', destinationClientId: 'cl3', localityId: 'lo1', modality: 'FCA', tonnage: null, cargoDetail: 'Aceite botellas',  truckId: null,  driverId: null,  appliedPrice: 155_000, status: 'pending' },
+  { id: 'or6', orderNumber: 'P-2024-006', date: '2026-04-29', deliveryDate: '2026-05-02', requestingClientId: 'cl1', destinationClientId: 'cl2', localityId: 'lo2', modality: 'CIP', tonnage: 32,   cargoDetail: 'Semolín granel',   truckId: null,  driverId: null,  appliedPrice: 210_000, status: 'pending' },
 ]
 
 export const orderLines: OrderLine[] = [
@@ -106,15 +124,20 @@ export const orderLines: OrderLine[] = [
 
 // ── Receipts ──────────────────────────────────────────────────────────────────
 export const receipts: Receipt[] = [
-  { id: 're1', orderId: 'or3', receiptNumber: 'R-0041', date: '2026-04-12', notes: '' },
-  { id: 're2', orderId: 'or4', receiptNumber: 'R-0040', date: '2026-04-09', notes: '' },
+  { id: 're1', orderId: 'or3', receiptNumber: 'R-0041', date: '2026-04-12', notes: '', tonnage: 0.9  },
+  { id: 're2', orderId: 'or4', receiptNumber: 'R-0040', date: '2026-04-09', notes: '', tonnage: 32   },
 ]
 
 // ── Maintenance types ─────────────────────────────────────────────────────────
+export const maintenanceCategories: MaintenanceCategory[] = [
+  { id: 'mc1', name: 'Motor',  description: '' },
+  { id: 'mc2', name: 'Frenos', description: '' },
+]
+
 export const maintenanceTypes: MaintenanceType[] = [
-  { id: 'mt1', name: 'Aceite motor',   description: '',                    defaultKmInterval: 10_000, defaultDaysInterval: 180,  defaultAlertKmBefore: 1_000, defaultAlertDaysBefore: 15 },
-  { id: 'mt2', name: 'Filtro de aire', description: '',                    defaultKmInterval: 20_000, defaultDaysInterval: null, defaultAlertKmBefore: 1_500, defaultAlertDaysBefore: null },
-  { id: 'mt3', name: 'Frenos',         description: 'Pastillas y discos', defaultKmInterval: 50_000, defaultDaysInterval: 365,  defaultAlertKmBefore: 3_000, defaultAlertDaysBefore: 30 },
+  { id: 'mt1', name: 'Aceite motor',   description: '',                    categoryId: 'mc1', defaultKmInterval: 10_000, defaultDaysInterval: 180,  defaultAlertKmBefore: 1_000, defaultAlertDaysBefore: 15 },
+  { id: 'mt2', name: 'Filtro de aire', description: '',                    categoryId: 'mc1', defaultKmInterval: 20_000, defaultDaysInterval: null, defaultAlertKmBefore: 1_500, defaultAlertDaysBefore: null },
+  { id: 'mt3', name: 'Frenos',         description: 'Pastillas y discos', categoryId: 'mc2', defaultKmInterval: 50_000, defaultDaysInterval: 365,  defaultAlertKmBefore: 3_000, defaultAlertDaysBefore: 30 },
 ]
 
 export const assignedMaintenances: AssignedMaintenance[] = [
@@ -140,6 +163,14 @@ export const maintenanceRecords: MaintenanceRecord[] = [
   // tr3 frenos: lastKm=20000, nextDue=70000, realKm=61000 → ok
   { id: 'mr4', truckId: 'tr3', maintenanceTypeId: 'mt3', driverId: 'dr3', date: '2025-06-01', kmAtMoment: 20_000, notes: '' },
   // tr4: no records → no_history
+]
+
+// ── Vehicle issue reports ─────────────────────────────────────────────────────
+export const vehicleIssueReports: VehicleIssueReport[] = [
+  { id: 'vir1', date: '2026-06-08', truckId: 'tr2', driverId: 'dr2', description: 'Ruido raro al frenar, parece venir de la rueda trasera izquierda.', status: 'pendiente', source: 'manual' },
+  { id: 'vir2', date: '2026-06-05', truckId: 'tr1', driverId: 'dr1', description: 'Pierde aceite, se nota mancha debajo del motor al estacionar.', status: 'atendido', source: 'app' },
+  { id: 'vir3', date: '2026-05-20', truckId: 'tr3', driverId: 'dr3', description: 'Luz de freno trasera derecha no enciende.', status: 'solucionado', source: 'app' },
+  { id: 'vir4', date: '2026-05-15', truckId: 'tr4', driverId: 'dr1', description: 'Vibración en el volante a alta velocidad.', status: 'descartado', source: 'manual' },
 ]
 
 // ── Driver expiry types ───────────────────────────────────────────────────────
@@ -178,9 +209,9 @@ export const expenses: Expense[] = [
 
 // ── Users ─────────────────────────────────────────────────────────────────────
 export const users: User[] = [
-  { id: 'usr1', name: 'Gustavo Administrador', email: 'admin@lusicic.com',      role: 'admin' },
-  { id: 'usr2', name: 'María Operadora',       email: 'moperadora@lusicic.com', role: 'operador' },
-  { id: 'usr3', name: 'Carlos Despachante',    email: 'cdespacho@lusicic.com',  role: 'operador' },
+  { id: 'usr1', name: 'Gustavo Administrador', email: 'admin@lusicic.com',      role: 'admin',    permissions: ['maestros', 'mantenimiento', 'administracion', 'informes'] },
+  { id: 'usr2', name: 'María Operadora',       email: 'moperadora@lusicic.com', role: 'operador', permissions: ['mantenimiento'] },
+  { id: 'usr3', name: 'Carlos Despachante',    email: 'cdespacho@lusicic.com',  role: 'operador', permissions: ['administracion', 'mantenimiento'] },
 ]
 
 // ── Invoices ──────────────────────────────────────────────────────────────────

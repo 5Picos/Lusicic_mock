@@ -41,7 +41,8 @@ function buildTruckRows(): TruckAlertRow[] {
 
       const nextDueKm = lastRecord && assignment.kmInterval
         ? lastRecord.kmAtMoment + assignment.kmInterval : null
-      const kmRemaining = nextDueKm !== null ? nextDueKm - truck.realKm : null
+      const currentKm = truck.geotabKm ?? truck.realKm
+      const kmRemaining = nextDueKm !== null ? nextDueKm - currentKm : null
 
       const nextDueDate = lastRecord && assignment.daysInterval
         ? (() => {

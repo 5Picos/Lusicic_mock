@@ -129,6 +129,40 @@
   }
 }
 
+@layer components {
+  /* ── Form structure ───────────────────────────────── */
+  .form-field      { @apply flex flex-col gap-1.5; }
+  .form-grid       { @apply grid grid-cols-2 gap-3; }
+  .form-label      { @apply text-[12px] uppercase text-slate-500; }
+  .form-hint       { @apply text-[13px] text-slate-400; }
+  .section-heading { @apply text-[12px] uppercase font-semibold text-slate-400 mb-3; }
+
+  /* ── Sheet / panel layout ─────────────────────────── */
+  .sheet-body    { @apply flex flex-col gap-4 p-4 flex-1; }
+  .sheet-section { @apply border-t border-slate-100 pt-3; }
+
+  /* ── Table row actions ────────────────────────────── */
+  .row-action        { @apply text-[13px] text-blue-600 font-medium hover:underline; }
+  .row-action-danger { @apply text-[13px] text-red-500  font-medium hover:underline; }
+
+  /* ── Status badges ────────────────────────────────── */
+  .badge        { @apply inline-flex items-center rounded-full px-2 py-0.5 text-[12px] font-semibold; }
+  .badge-green  { @apply bg-green-100  text-green-700;  }
+  .badge-amber  { @apply bg-amber-100  text-amber-700;  }
+  .badge-red    { @apply bg-red-100    text-red-600;    }
+  .badge-slate  { @apply bg-slate-100  text-slate-500;  }
+  .badge-blue   { @apply bg-blue-100   text-blue-700;   }
+  .badge-violet { @apply bg-violet-100 text-violet-700; }
+
+  /* ── Generic containers ───────────────────────────── */
+  .info-panel { @apply flex flex-col gap-3 rounded-lg border border-slate-200 p-3; }
+  .data-card  { @apply bg-white border border-slate-200 rounded-lg overflow-hidden; }
+
+  /* ── Manual HTML table primitives ─────────────────── */
+  .tbl-th { @apply px-3.5 py-2 text-[12px] font-semibold text-slate-500 uppercase tracking-[0.04em]; }
+  .tbl-td { @apply px-3.5 py-[9px]; }
+}
+
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }

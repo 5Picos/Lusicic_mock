@@ -10,7 +10,18 @@
       "Bash(npm run *)",
       "WebFetch(domain:localhost)",
       "Bash(git init *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "PowerShell(Get-ChildItem \"D:\\\\Proyectos\\\\VibeCity\\\\Lusicic_mock_2\\\\app\" -Recurse | Where-Object { $_.Name -match \"pedido\" } | Select-Object FullName)",
+      "PowerShell(git add *)",
+      "Bash(git restore *)",
+      "PowerShell(git restore *)",
+      "Bash(curl *)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill *)",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "PowerShell(npx tsc --noEmit)",
+      "PowerShell(npm run *)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Proyectos\\\\VibeCity\\\\Lusicic_mock_2\\\\components\" -Recurse | Where-Object { $_.Extension -eq \".tsx\" -or $_.PSIsContainer } | Select-Object FullName)"
     ]
   }
 }

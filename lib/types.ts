@@ -14,6 +14,9 @@ export interface Truck {
   year: number
   realKm: number
   estimatedKm: number
+  geotabDeviceId: string | null
+  geotabKm: number | null
+  geotabKmSyncedAt: string | null
 }
 
 export interface Driver {
@@ -21,12 +24,20 @@ export interface Driver {
   name: string
   phone: string
   email: string
+  defaultTruckId: string | null
+}
+
+export interface MaintenanceCategory {
+  id: string
+  name: string
+  description: string
 }
 
 export interface MaintenanceType {
   id: string
   name: string
   description: string
+  categoryId: string
   defaultKmInterval: number | null
   defaultDaysInterval: number | null
   defaultAlertKmBefore: number | null
@@ -52,6 +63,44 @@ export interface MaintenanceRecord {
   date: string
   kmAtMoment: number
   notes: string
+}
+
+export type VehicleIssueStatus = 'pendiente' | 'atendido' | 'solucionado' | 'descartado'
+export type VehicleIssueSource = 'app' | 'manual'
+
+export interface VehicleIssueReport {
+  id: string
+  date: string
+  truckId: string
+  driverId: string
+  description: string
+  status: VehicleIssueStatus
+  source: VehicleIssueSource
+}
+
+export type DeviceStatus = 'active' | 'revoked'
+export type DevicePlatform = 'android' | 'ios'
+
+export interface Device {
+  id: string
+  driverId: string
+  installationId: string
+  platform: DevicePlatform
+  model: string
+  status: DeviceStatus
+  enrolledAt: string
+  lastSeenAt: string | null
+  revokedAt: string | null
+  revokedReason: string | null
+}
+
+export interface EnrollmentCode {
+  id: string
+  driverId: string
+  code: string
+  createdAt: string
+  expiresAt: string
+  usedAt: string | null
 }
 
 export interface DriverExpiryType {
@@ -104,6 +153,7 @@ export interface Article {
   id: string
   code: string
   name: string
+  unitWeightKg: number | null
 }
 
 export interface OrderLine {
@@ -116,6 +166,8 @@ export interface OrderLine {
 export interface PriceList {
   id: string
   name: string
+  clientId: string | null
+  isDefault: boolean
 }
 
 export interface LocalityPrice {
@@ -129,6 +181,7 @@ export interface Order {
   id: string
   orderNumber: string
   date: string
+  deliveryDate: string
   requestingClientId: string
   destinationClientId: string
   localityId: string
@@ -147,6 +200,7 @@ export interface Receipt {
   receiptNumber: string
   date: string
   notes: string
+  tonnage: number | null
 }
 
 export interface Invoice {
@@ -207,10 +261,12 @@ export interface Expense {
 }
 
 export type UserRole = 'admin' | 'operador'
+export type Section = 'maestros' | 'mantenimiento' | 'administracion' | 'informes'
 
 export interface User {
   id: string
   name: string
   email: string
   role: UserRole
+  permissions: Section[]
 }

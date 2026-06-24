@@ -3,81 +3,23 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import {
-  LayoutDashboard, Wrench, History, CalendarClock, ClipboardList, Link2,
-  Truck, Users, Building2, Store, Settings, Package,
-  MapPin, DollarSign, UserCog, ShoppingCart, FileCheck,
-  Receipt, CreditCard, Banknote, FileText, PiggyBank,
-  TrendingDown, TrendingUp, ArrowLeftRight, Route,
-  Landmark, FileSearch, ChevronRight, LogOut,
-} from 'lucide-react'
+import { ChevronRight, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
-
-const NAV_GROUPS = [
-  {
-    id: 'maestros',
-    label: 'Maestros',
-    items: [
-      { href: '/clientes',    label: 'Clientes',       icon: Building2 },
-      { href: '/proveedores', label: 'Proveedores',    icon: Store },
-      { href: '/tipos-gasto', label: 'Tipos de gasto', icon: Settings },
-      { href: '/articulos',   label: 'Artículos',      icon: Package },
-      { href: '/localidades', label: 'Localidades',    icon: MapPin },
-      { href: '/precios',     label: 'Precios',        icon: DollarSign },
-      { href: '/usuarios',    label: 'Usuarios',       icon: UserCog },
-    ],
-  },
-  {
-    id: 'mantenimiento',
-    label: 'Mantenimiento',
-    items: [
-      { href: '/camiones',                    label: 'Camiones',       icon: Truck },
-      { href: '/choferes',                    label: 'Choferes',       icon: Users },
-      { href: '/dashboard',                   label: 'Dashboard',      icon: LayoutDashboard },
-      { href: '/tipos-mantenimiento',         label: 'Tipos mant.',    icon: ClipboardList },
-      { href: '/asignaciones-mantenimiento',  label: 'Asignaciones',   icon: Link2 },
-      { href: '/mantenimientos',              label: 'Registros',      icon: Wrench },
-      { href: '/historial',                   label: 'Historial',      icon: History },
-      { href: '/vencimientos-chofer',         label: 'Venc. choferes', icon: CalendarClock },
-    ],
-  },
-  {
-    id: 'administracion',
-    label: 'Administración',
-    items: [
-      { href: '/pedidos',          label: 'Pedidos',          icon: ShoppingCart },
-      { href: '/remitos',          label: 'Remitos',          icon: FileCheck },
-      { href: '/facturacion',      label: 'Facturación',      icon: Receipt },
-      { href: '/cuenta-corriente', label: 'Cuenta corriente', icon: CreditCard },
-      { href: '/cobros',           label: 'Cobros',           icon: Banknote },
-      { href: '/cheques',          label: 'Cheques',          icon: FileText },
-      { href: '/gastos',           label: 'Gastos',           icon: PiggyBank },
-    ],
-  },
-  {
-    id: 'informes',
-    label: 'Informes',
-    items: [
-      { href: '/informes/gastos',           label: 'Gastos',         icon: TrendingDown },
-      { href: '/informes/ingresos',         label: 'Ingresos',       icon: TrendingUp },
-      { href: '/informes/comparativo',      label: 'Comparativo',    icon: ArrowLeftRight },
-      { href: '/informes/viajes',           label: 'Viajes',         icon: Route },
-      { href: '/informes/peajes',           label: 'Peajes',         icon: Landmark },
-      { href: '/informes/facturas-destino', label: 'Fact. destino',  icon: FileSearch },
-    ],
-  },
-]
+import { getAccessibleGroups } from '@/lib/nav'
+import type { Section } from '@/lib/types'
 
 export default function Sidebar() {
   const pathname = usePathname()
   const { user, logout } = useAuth()
 
-  const activeGroupId = NAV_GROUPS.find(g =>
-    g.items.some(item => pathname.startsWith(item.href))
-  )?.id ?? 'mantenimiento'
+  const groups = user ? getAccessibleGroups(user) : []
 
-  const [openGroupId, setOpenGroupId] = useState(activeGroupId)
+  const activeGroupId = groups.find(g =>
+    g.items.some(item => pathname.startsWith(item.href))
+  )?.id ?? groups[0]?.id ?? ''
+
+  const [openGroupId, setOpenGroupId] = useState<Section | ''>(activeGroupId)
 
   useEffect(() => {
     setOpenGroupId(activeGroupId)
@@ -93,7 +35,7 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-2">
-        {NAV_GROUPS.map(group => {
+        {groups.map(group => {
           const isOpen = group.id === openGroupId
           return (
             <div key={group.id}>

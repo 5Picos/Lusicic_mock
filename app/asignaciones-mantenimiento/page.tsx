@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import {
   assignedMaintenances as initialItems,
   maintenanceTypes,
+  maintenanceCategories,
   trucks,
 } from '@/lib/mock-data'
 import type { AssignedMaintenance } from '@/lib/types'
@@ -149,6 +150,15 @@ export default function AsignacionesMantenimientoPage() {
       },
     },
     {
+      key: 'category',
+      header: 'Categoría',
+      cell: i => {
+        const mt = maintenanceTypes.find(mt => mt.id === i.maintenanceTypeId)
+        const category = maintenanceCategories.find(c => c.id === mt?.categoryId)
+        return <span className="text-slate-500">{category?.name ?? '—'}</span>
+      },
+    },
+    {
       key: 'kmInterval',
       header: 'Intervalo km',
       className: 'text-right',
@@ -194,8 +204,8 @@ export default function AsignacionesMantenimientoPage() {
       key: 'actions', header: '', className: 'text-right',
       cell: i => (
         <div className="flex items-center justify-end gap-3">
-          <button onClick={() => openEdit(i)} className="text-[11px] text-blue-600 font-medium hover:underline">Editar</button>
-          <button onClick={() => setDeleteId(i.id)} className="text-[11px] text-red-500 font-medium hover:underline">Eliminar</button>
+          <button onClick={() => openEdit(i)} className="row-action">Editar</button>
+          <button onClick={() => setDeleteId(i.id)} className="row-action-danger">Eliminar</button>
         </div>
       ),
     },
@@ -234,9 +244,9 @@ export default function AsignacionesMantenimientoPage() {
           <SheetHeader>
             <SheetTitle>{editingItem ? 'Editar asignación' : 'Nueva asignación'}</SheetTitle>
           </SheetHeader>
-          <div className="flex flex-col gap-4 p-4 flex-1">
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Camión *</Label>
+          <div className="sheet-body">
+            <div className="form-field">
+              <Label className="form-label">Camión *</Label>
               <Select
                 value={form.truckId}
                 onValueChange={v => setForm(p => ({ ...p, truckId: v ?? '', maintenanceTypeId: '' }))}
@@ -250,8 +260,8 @@ export default function AsignacionesMantenimientoPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Tipo de mantenimiento *</Label>
+            <div className="form-field">
+              <Label className="form-label">Tipo de mantenimiento *</Label>
               <Select
                 value={form.maintenanceTypeId}
                 onValueChange={handleTypeSelect}
@@ -267,11 +277,11 @@ export default function AsignacionesMantenimientoPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="border-t border-slate-100 pt-3">
-              <p className="text-[10px] uppercase text-slate-400 font-semibold mb-3">Intervalos</p>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-[10px] uppercase text-slate-500">Cada X km</Label>
+            <div className="sheet-section">
+              <p className="section-heading">Intervalos</p>
+              <div className="form-grid">
+                <div className="form-field">
+                  <Label className="form-label">Cada X km</Label>
                   <Input
                     type="number"
                     min={0}
@@ -280,8 +290,8 @@ export default function AsignacionesMantenimientoPage() {
                     placeholder="10000"
                   />
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-[10px] uppercase text-slate-500">Cada X días</Label>
+                <div className="form-field">
+                  <Label className="form-label">Cada X días</Label>
                   <Input
                     type="number"
                     min={0}
@@ -292,11 +302,11 @@ export default function AsignacionesMantenimientoPage() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-slate-100 pt-3">
-              <p className="text-[10px] uppercase text-slate-400 font-semibold mb-3">Alertas</p>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-[10px] uppercase text-slate-500">Avisar X km antes</Label>
+            <div className="sheet-section">
+              <p className="section-heading">Alertas</p>
+              <div className="form-grid">
+                <div className="form-field">
+                  <Label className="form-label">Avisar X km antes</Label>
                   <Input
                     type="number"
                     min={0}
@@ -305,8 +315,8 @@ export default function AsignacionesMantenimientoPage() {
                     placeholder="1000"
                   />
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-[10px] uppercase text-slate-500">Avisar X días antes</Label>
+                <div className="form-field">
+                  <Label className="form-label">Avisar X días antes</Label>
                   <Input
                     type="number"
                     min={0}
@@ -317,8 +327,8 @@ export default function AsignacionesMantenimientoPage() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-slate-100 pt-3 flex items-center justify-between">
-              <Label className="text-[10px] uppercase text-slate-500">Activo</Label>
+            <div className="sheet-section flex items-center justify-between">
+              <Label className="form-label">Activo</Label>
               <button
                 type="button"
                 onClick={() => setForm(p => ({ ...p, active: !p.active }))}
@@ -333,7 +343,7 @@ export default function AsignacionesMantenimientoPage() {
               </button>
             </div>
           </div>
-          <SheetFooter className="border-t border-slate-100 pt-3">
+          <SheetFooter className="sheet-section">
             <Button variant="outline" onClick={() => setSheetOpen(false)}>Cancelar</Button>
             <Button onClick={handleSave} disabled={!form.truckId || !form.maintenanceTypeId}>Guardar</Button>
           </SheetFooter>

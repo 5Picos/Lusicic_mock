@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
-  maintenanceRecords as initialRecords, assignedMaintenances, maintenanceTypes,
+  maintenanceRecords as initialRecords, assignedMaintenances, maintenanceTypes, maintenanceCategories,
   trucks as initialTrucks, drivers,
 } from '@/lib/mock-data'
 import type { MaintenanceRecord, Truck } from '@/lib/types'
@@ -66,6 +66,14 @@ export default function MantenimientosPage() {
     { key: 'date',   header: 'Fecha',  cell: r => <span className="tabular-nums text-slate-500">{r.date}</span> },
     { key: 'truck',  header: 'Camión', cell: r => <span className="font-medium text-slate-800">{trucks.find(t => t.id === r.truckId)?.plate ?? '—'}</span> },
     { key: 'type',   header: 'Tipo',   cell: r => <span className="text-slate-700">{maintenanceTypes.find(mt => mt.id === r.maintenanceTypeId)?.name ?? '—'}</span> },
+    {
+      key: 'category', header: 'Categoría',
+      cell: r => {
+        const mt = maintenanceTypes.find(mt => mt.id === r.maintenanceTypeId)
+        const category = maintenanceCategories.find(c => c.id === mt?.categoryId)
+        return <span className="text-slate-500">{category?.name ?? '—'}</span>
+      },
+    },
     { key: 'driver', header: 'Chofer', cell: r => <span className="text-slate-500">{drivers.find(d => d.id === r.driverId)?.name ?? '—'}</span> },
     { key: 'km',     header: 'Km', className: 'text-right', cell: r => <span className="tabular-nums text-slate-600">{r.kmAtMoment.toLocaleString('es-AR')}</span> },
     { key: 'notes',  header: 'Notas',  cell: r => <span className="text-[11px] text-slate-400">{r.notes || '—'}</span> },
@@ -86,9 +94,9 @@ export default function MantenimientosPage() {
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent className="w-[420px] flex flex-col">
           <SheetHeader><SheetTitle>Registrar mantenimiento</SheetTitle></SheetHeader>
-          <div className="flex flex-col gap-4 p-4 flex-1">
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Camión</Label>
+          <div className="sheet-body">
+            <div className="form-field">
+              <Label className="form-label">Camión</Label>
               <Select value={form.truckId} onValueChange={v => setForm(p => ({ ...p, truckId: v ?? '', maintenanceTypeId: '' }))}>
                 <SelectTrigger><SelectValue placeholder="Seleccionar camión..." /></SelectTrigger>
                 <SelectContent>
@@ -96,8 +104,8 @@ export default function MantenimientosPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Tipo de mantenimiento</Label>
+            <div className="form-field">
+              <Label className="form-label">Tipo de mantenimiento</Label>
               <Select value={form.maintenanceTypeId} onValueChange={v => setForm(p => ({ ...p, maintenanceTypeId: v ?? '' }))}>
                 <SelectTrigger disabled={!form.truckId}>
                   <SelectValue placeholder={form.truckId ? 'Seleccionar tipo...' : 'Primero seleccionar camión'} />
@@ -107,29 +115,29 @@ export default function MantenimientosPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="flex flex-col gap-1.5">
-                <Label className="text-[10px] uppercase text-slate-500">Fecha</Label>
+            <div className="form-grid">
+              <div className="form-field">
+                <Label className="form-label">Fecha</Label>
                 <Input type="date" value={form.date} onChange={e => setForm(p => ({ ...p, date: e.target.value }))} />
               </div>
-              <div className="flex flex-col gap-1.5">
-                <Label className="text-[10px] uppercase text-slate-500">Km al momento</Label>
+              <div className="form-field">
+                <Label className="form-label">Km al momento</Label>
                 <Input type="number" value={form.kmAtMoment} onChange={e => setForm(p => ({ ...p, kmAtMoment: e.target.value }))} placeholder="88000" />
               </div>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Chofer</Label>
+            <div className="form-field">
+              <Label className="form-label">Chofer</Label>
               <Select value={form.driverId} onValueChange={v => setForm(p => ({ ...p, driverId: v ?? '' }))}>
                 <SelectTrigger><SelectValue placeholder="Seleccionar chofer..." /></SelectTrigger>
                 <SelectContent>{drivers.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] uppercase text-slate-500">Notas</Label>
+            <div className="form-field">
+              <Label className="form-label">Notas</Label>
               <Input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} placeholder="Observaciones..." />
             </div>
           </div>
-          <SheetFooter className="border-t border-slate-100 pt-3">
+          <SheetFooter className="sheet-section">
             <Button variant="outline" onClick={() => setSheetOpen(false)}>Cancelar</Button>
             <Button
               onClick={handleSave}

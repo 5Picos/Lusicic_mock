@@ -25,6 +25,7 @@ export default function RemitosPage() {
   const [receiptNumber, setReceiptNumber] = useState('')
   const [receiptDate, setReceiptDate] = useState(new Date().toISOString().split('T')[0])
   const [receiptNotes, setReceiptNotes] = useState('')
+  const [receiptTonnage, setReceiptTonnage] = useState('')
   const [tollAmounts, setTollAmounts] = useState<Record<string, number>>({})
 
   const receiptedOrderIds = new Set(receipts.map(r => r.orderId))
@@ -38,6 +39,7 @@ export default function RemitosPage() {
       const defaults: Record<string, number> = {}
       tolls.forEach(lt => { defaults[lt.id] = lt.amount })
       setTollAmounts(defaults)
+      setReceiptTonnage(order.tonnage != null ? String(order.tonnage) : '')
     }
     setSheetOpen(true)
   }
@@ -51,6 +53,7 @@ export default function RemitosPage() {
     const id = `re${Date.now()}`
     const newReceipt: Receipt = {
       id, orderId: selectedOrder.id, receiptNumber, date: receiptDate, notes: receiptNotes,
+      tonnage: receiptTonnage ? Number(receiptTonnage) : null,
     }
     setReceipts(prev => [newReceipt, ...prev])
     setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { ...o, status: 'delivered' as OrderStatus } : o))
@@ -58,13 +61,14 @@ export default function RemitosPage() {
     setSelectedOrderId('')
     setReceiptNumber('')
     setReceiptNotes('')
+    setReceiptTonnage('')
     setTollAmounts({})
   }
 
   const receiptColumns: Column<Receipt>[] = [
-    { key: 'num',    header: 'N° Remito',      cell: r => <span className="font-semibold text-slate-800">{r.receiptNumber}</span> },
-    { key: 'date',   header: 'Fecha',          cell: r => <span className="text-slate-500">{r.date}</span> },
-    { key: 'order',  header: 'N° Pedido',      cell: r => <span className="text-slate-700">{orders.find(o => o.id === r.orderId)?.orderNumber}</span> },
+    { key: 'num',     header: 'N° Remito',      cell: r => <span className="font-semibold text-slate-800">{r.receiptNumber}</span> },
+    { key: 'date',    header: 'Fecha',           cell: r => <span className="text-slate-500">{r.date}</span> },
+    { key: 'order',   header: 'N° Pedido',       cell: r => <span className="text-slate-700">{orders.find(o => o.id === r.orderId)?.orderNumber}</span> },
     {
       key: 'client', header: 'Cliente destino',
       cell: r => {
@@ -79,6 +83,7 @@ export default function RemitosPage() {
         return <span className="text-slate-500">{localities.find(l => l.id === order?.localityId)?.name}</span>
       },
     },
+    { key: 'tonnage', header: 'Tonelaje', className: 'text-right', cell: r => <span className="tabular-nums text-slate-700">{r.tonnage != null ? `${r.tonnage} t` : '—'}</span> },
     {
       key: 'articles', header: 'Artículos',
       cell: r => {
@@ -134,7 +139,7 @@ export default function RemitosPage() {
 
           <div className="flex flex-col gap-4 p-4 flex-1">
             <div className="flex flex-col gap-3">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Pedido</div>
+              <div className="section-heading">Pedido</div>
               <Select value={selectedOrderId} onValueChange={v => v && openForOrder(v)}>
                 <SelectTrigger><SelectValue placeholder="Seleccionar pedido..." /></SelectTrigger>
                 <SelectContent>
@@ -146,39 +151,55 @@ export default function RemitosPage() {
                 </SelectContent>
               </Select>
               <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-[10px] uppercase text-slate-500">N° Remito</Label>
+                <div className="form-field">
+                  <Label className="form-label">N° Remito</Label>
                   <Input value={receiptNumber} onChange={e => setReceiptNumber(e.target.value)} placeholder="R-0042" />
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-[10px] uppercase text-slate-500">Fecha</Label>
+                <div className="form-field">
+                  <Label className="form-label">Fecha</Label>
                   <Input type="date" value={receiptDate} onChange={e => setReceiptDate(e.target.value)} />
                 </div>
               </div>
-              <div className="flex flex-col gap-1.5">
-                <Label className="text-[10px] uppercase text-slate-500">Notas</Label>
+              <div className="form-field">
+                <Label className="form-label">Tonelaje real (t)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.001"
+                  value={receiptTonnage}
+                  onChange={e => setReceiptTonnage(e.target.value)}
+                  placeholder="32.000"
+                />
+                {selectedOrder?.tonnage != null && (
+                  <span className="form-hint">Pedido: {selectedOrder.tonnage} t</span>
+                )}
+              </div>
+              <div className="form-field">
+                <Label className="form-label">Notas</Label>
                 <Input value={receiptNotes} onChange={e => setReceiptNotes(e.target.value)} placeholder="Observaciones..." />
               </div>
             </div>
 
             {selectedLines.length > 0 && (
               <div className="flex flex-col gap-2">
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 border-t border-slate-100 pt-3">Artículos despachados</div>
+                <div className="section-heading border-t border-slate-100 pt-3">Artículos despachados</div>
                 <div className="text-[10px] text-slate-400">Solo lectura — para editar cantidades, modificar el pedido primero</div>
                 <table className="w-full text-[12px] border border-slate-200 rounded-md overflow-hidden">
                   <thead><tr className="bg-slate-50 border-b border-slate-200">
-                    <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-500 uppercase">Código</th>
-                    <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-500 uppercase">Artículo</th>
-                    <th className="text-right px-3 py-2 text-[10px] font-semibold text-slate-500 uppercase">Cantidad</th>
+                    <th className="tbl-th text-left">Código</th>
+                    <th className="tbl-th text-left">Artículo</th>
+                    <th className="tbl-th text-right">Cantidad</th>
+                    <th className="tbl-th text-right">Peso unit.</th>
                   </tr></thead>
                   <tbody>
                     {selectedLines.map(ol => {
                       const art = articles.find(a => a.id === ol.articleId)
                       return (
                         <tr key={ol.id} className="border-b border-slate-100 last:border-0">
-                          <td className="px-3 py-2 text-slate-500">{art?.code}</td>
-                          <td className="px-3 py-2 text-slate-800">{art?.name}</td>
-                          <td className="px-3 py-2 text-right tabular-nums text-slate-700">{ol.quantity}</td>
+                          <td className="tbl-td text-slate-500">{art?.code}</td>
+                          <td className="tbl-td text-slate-800">{art?.name}</td>
+                          <td className="tbl-td text-right tabular-nums text-slate-700">{ol.quantity}</td>
+                          <td className="tbl-td text-right tabular-nums text-slate-500">{art?.unitWeightKg != null ? `${art.unitWeightKg} kg` : '—'}</td>
                         </tr>
                       )
                     })}
@@ -189,19 +210,19 @@ export default function RemitosPage() {
 
             {selectedTolls.length > 0 && (
               <div className="flex flex-col gap-2">
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 border-t border-slate-100 pt-3">Peajes</div>
+                <div className="section-heading border-t border-slate-100 pt-3">Peajes</div>
                 <table className="w-full text-[12px] border border-slate-200 rounded-md overflow-hidden">
                   <thead><tr className="bg-slate-50 border-b border-slate-200">
-                    <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-500 uppercase">Cabina</th>
-                    <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-500 uppercase">Proveedor</th>
-                    <th className="text-right px-3 py-2 text-[10px] font-semibold text-slate-500 uppercase">Monto</th>
+                    <th className="tbl-th text-left">Cabina</th>
+                    <th className="tbl-th text-left">Proveedor</th>
+                    <th className="tbl-th text-right">Monto</th>
                   </tr></thead>
                   <tbody>
                     {selectedTolls.map(lt => (
                       <tr key={lt.id} className="border-b border-slate-100 last:border-0">
-                        <td className="px-3 py-2 text-slate-700">{lt.description}</td>
-                        <td className="px-3 py-2 text-slate-500">{suppliers.find(s => s.id === lt.supplierId)?.name}</td>
-                        <td className="px-3 py-2 text-right">
+                        <td className="tbl-td text-slate-700">{lt.description}</td>
+                        <td className="tbl-td text-slate-500">{suppliers.find(s => s.id === lt.supplierId)?.name}</td>
+                        <td className="tbl-td text-right">
                           <Input
                             type="number"
                             value={tollAmounts[lt.id] ?? lt.amount}
