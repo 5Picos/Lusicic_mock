@@ -35,7 +35,10 @@ MaintenanceType (catalog — for trucks)
 Truck
  ├── plate, description, brand, model, year
  ├── realKm                    -- manually confirmed odometer reading
- └── estimatedKm               -- accumulated from receipts via locality.roundTripKm
+ ├── estimatedKm               -- accumulated from receipts via locality.roundTripKm
+ ├── geotabDeviceId            -- Geotab device serial; null if truck has no GPS unit
+ ├── geotabKm                  -- last odometer value synced from Geotab (in km); null if not synced
+ └── geotabKmSyncedAt          -- ISO timestamp of last successful Geotab sync; null if never synced
 
 AssignedMaintenance            -- junction between Truck and MaintenanceType
  ├── truckId
@@ -261,7 +264,7 @@ Expense (Gasto)
 
 **`Invoice.total` is stored at creation, not derived.** Recomputing from linked receipts after the fact would cause drift if receipts are edited. The stored value is authoritative.
 
-**`Truck` has two odometer counters.** `estimatedKm` is incremented automatically when a receipt is saved (via `locality.roundTripKm`). `realKm` is updated manually from the physical odometer. Alert calculations always use `realKm`.
+**`Truck` has three odometer counters.** `estimatedKm` is incremented automatically when a receipt is saved (via `locality.roundTripKm`). `realKm` is updated manually from the physical odometer. `geotabKm` is synced from the Geotab GPS device. Alert calculations use `geotabKm ?? realKm` — Geotab takes priority when available; manual reading is the fallback for trucks without a GPS unit.
 
 ---
 
@@ -698,6 +701,113 @@ Notes created from the app land in `/fallas` with an `APP` origin badge, disting
 
 ---
 
+## Geotab Integration
+
+Trucks equipped with a Geotab GO device can have their odometer synced automatically instead of relying on manual entry. The integration is optional per truck — trucks with `geotabDeviceId = null` continue using `realKm`.
+
+### How the Alert Engine Uses It
+
+```ts
+// lib/alert-engine.ts
+const currentKm = truck.geotabKm ?? truck.realKm
+```
+
+Priority: Geotab reading first; manual reading as fallback. This means `realKm` remains the source of truth for trucks without GPS, and a fallback if Geotab sync fails.
+
+### MyGeotab API
+
+The MyGeotab API uses JSON-RPC over HTTPS. All calls share the same endpoint and follow the same envelope.
+
+**Base URL**
+
+```
+https://{server}/apiv1
+```
+
+`{server}` is the MyGeotab server assigned to the fleet account (e.g. `my.geotab.com`, `my3.geotab.com`).
+
+**Authentication**
+
+```json
+POST https://{server}/apiv1
+{
+  "method": "Authenticate",
+  "params": {
+    "userName": "user@empresa.com",
+    "password": "...",
+    "database": "nombre_db"
+  }
+}
+```
+
+Response:
+```json
+{ "result": { "credentials": { "sessionId": "...", "userName": "...", "database": "..." } } }
+```
+
+The returned `credentials` object must be included in every subsequent call.
+
+**Querying the Odometer — `DeviceStatusInfo`**
+
+The simplest approach for a single truck's current odometer:
+
+```json
+POST https://{server}/apiv1
+{
+  "method": "Get",
+  "params": {
+    "typeName": "DeviceStatusInfo",
+    "search": { "deviceSearch": { "id": "b1" } },
+    "credentials": { "sessionId": "...", "userName": "...", "database": "..." }
+  }
+}
+```
+
+Response contains `odometer` in **metres**. Divide by 1000 to get km:
+
+```ts
+const geotabKm = Math.round(result[0].odometer / 1000)
+```
+
+**Querying Historical Odometer — `StatusData`**
+
+For point-in-time or historical readings, use `StatusData` with `DiagnosticOdometerAdjustmentId`:
+
+```json
+{
+  "method": "Get",
+  "params": {
+    "typeName": "StatusData",
+    "search": {
+      "deviceSearch": { "id": "b1" },
+      "diagnosticSearch": { "id": "DiagnosticOdometerAdjustmentId" },
+      "fromDate": "2026-06-25T00:00:00Z",
+      "toDate":   "2026-06-25T23:59:59Z"
+    },
+    "credentials": { ... }
+  }
+}
+```
+
+### Sync Strategy (v2)
+
+```
+Scheduled job (e.g. every 6h)
+  For each Truck where geotabDeviceId IS NOT NULL:
+    1. Call DeviceStatusInfo with geotabDeviceId
+    2. Convert metres → km
+    3. Write geotabKm and geotabKmSyncedAt = now()
+    4. Alert engine picks up the new value on next dashboard load
+```
+
+The sync job does **not** update `realKm` — those remain independently managed by the operator.
+
+### Device ID Mapping
+
+`Truck.geotabDeviceId` stores the Geotab device's `id` field (the internal identifier returned by the MyGeotab API, e.g. `"b1"`). This is set once when the GPS unit is installed on the truck; it does not change unless the hardware is replaced.
+
+---
+
 ## System Bootstrap (First Install)
 
 1. **Trucks** — register all vehicles with current real odometer reading.
@@ -747,6 +857,9 @@ Current prototype uses static mock data. The data model, calculation logic, and 
 | `year` | number | |
 | `realKm` | number | Manual odometer |
 | `estimatedKm` | number | Auto from receipts |
+| `geotabDeviceId` | string \| null | Geotab device serial; null if no GPS unit |
+| `geotabKm` | number \| null | Last synced odometer from Geotab (km); null if not synced |
+| `geotabKmSyncedAt` | string \| null | ISO timestamp of last Geotab sync |
 
 ### Driver
 | Field | Type | Notes |
